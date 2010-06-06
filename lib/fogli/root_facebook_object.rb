@@ -22,9 +22,17 @@ module Fogli
       #   above.
       def find(id, options=nil)
         # TODO: Do something with options
-        new.populate_properties(get("/#{id}"))
+        new(get("/#{id}"))
       end
       alias :[] :find
+    end
+
+    # Override {FacebookGraph#get} to prepend object ID. When calling
+    # {#get} on an instance of a root facebook object, its typically
+    # to access a connection. To avoid repetition, we always prepend
+    # the root object's ID.
+    def get(url, *args)
+      super("/#{id}#{url}", *args)
     end
   end
 end

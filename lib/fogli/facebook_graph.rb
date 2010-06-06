@@ -50,5 +50,11 @@ module Fogli
         response
       end
     end
+
+    # Shortcut method to access the class-level get method. See {get}
+    # for more information.
+    def get(*args)
+      self.class.get(*args)
+    end
   end
 end

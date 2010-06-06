@@ -13,6 +13,11 @@ module Fogli
           options = names.last
           options = {} if !options.kind_of?(Hash)
 
+          # Merge in the defaults
+          options = {
+            :class => :dynamic
+          }.merge(options)
+
           names.each do |name|
             next if name.kind_of?(Hash)
             name = name.to_s.downcase.to_sym
@@ -36,6 +41,17 @@ module Fogli
         # connections associated with the parent classes.
         def propagate_connections(klass)
           connections.each { |n, o| klass.connection(n, o) }
+        end
+      end
+
+      def read_connection(name)
+        connection_values[name]
+      end
+
+      def connection_values
+        @_connection_values ||= Hash.new do |h,k|
+          options = self.class.connections[k]
+          h[k] = ConnectionProxy.new(self, k, options).load!
         end
       end
     end

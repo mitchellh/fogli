@@ -6,6 +6,9 @@ module Fogli
              :meeting_for, :relationship_status, :religion,
              :political, :verified, :significant_other, :timezone
 
+    connection :friends, :class => :User
+    connection :feed
+
     # Checks if a user is authorized. This returns a true or false
     # depending if we're allowed to make authorized calls yet. If this
     # returns false, the user must be authorized using the {OAuth}
