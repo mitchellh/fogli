@@ -1,6 +1,6 @@
 source "http://rubygems.org"
 
-# Gem dependencies coming soon
+gem "httparty", "~> 0.5.2"
 
 group :development do
   gem "contest", ">= 0.1.2"
