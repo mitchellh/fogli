@@ -24,8 +24,9 @@ module Fogli
       # Overriding HTTParty's `get` method to handle access
       # tokens.
       def get(url, options=nil)
+        options ||= {}
+
         if Fogli.access_token
-          options ||= {}
           options[:query] ||= {}
           options[:query].merge!(:access_token => Fogli.access_token)
         end
