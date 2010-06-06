@@ -32,5 +32,21 @@ module Fogli
     def initialize(data=nil)
       populate_properties(data) if data
     end
+
+    # Customize the inspect method to pretty print Facebook objects
+    # and their associated properties and connections.
+    def inspect
+      values = []
+      self.class.properties.each do |name, options|
+        value = read_property(name)
+        values << "#{name.inspect}=#{value.inspect}"
+      end
+
+      self.class.connections.each do |name, options|
+        values.push("#{name.inspect}=...")
+      end
+
+      "#<#{self.class} #{values.sort.join(", ")}>".strip
+    end
   end
 end
