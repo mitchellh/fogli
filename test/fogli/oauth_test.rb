@@ -23,6 +23,18 @@ class OAuthObjectTest < Test::Unit::TestCase
       expected = @klass::AUTHORIZE_URI % ["foo", "bar"]
       assert_equal expected, @klass.authorize
     end
+
+    should "allow scopes to be added to the authorization" do
+      options = {
+        :client_id => "foo",
+        :redirect_uri => "bar",
+        :scope => %w{a b c}
+      }
+      expected = @klass::AUTHORIZE_URI % ["foo", "bar"]
+      expected += "&scope=a,b,c"
+
+      assert_equal expected, @klass.authorize(options)
+    end
   end
 
   context "access token" do

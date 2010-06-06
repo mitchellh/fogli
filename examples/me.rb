@@ -13,12 +13,14 @@ Fogli.redirect_uri = "http://localhost:4567/verify"
 
 get "/" do
   # Authorize the user so we can get an access token
-  redirect Fogli::OAuth.authorize
+  redirect Fogli::OAuth.authorize(:scope => "email")
 end
 
 get "/verify" do
   # Get and store the access token, then print out their user
   # information to verify it worked
   Fogli.access_token = Fogli::OAuth.access_token(:code => params[:code])
-  Fogli::User[:me].inspect
+
+  # Output authorized information to verify it worked
+  Fogli::User[:me].email
 end
