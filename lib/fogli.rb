@@ -23,6 +23,7 @@ module Fogli
   autoload :RootFacebookObject, 'fogli/root_facebook_object'
 
   # User-friendly models
+  autoload :NamedObject, 'fogli/named_object'
   autoload :OAuth, 'fogli/oauth'
   autoload :User, 'fogli/user'
 end

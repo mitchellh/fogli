@@ -17,7 +17,7 @@ class FacebookGraphTest < Test::Unit::TestCase
     end
 
     should "use http by default" do
-      @klass.expects(:get_original).with("http://#{@klass::GRAPH_DOMAIN}/foo", nil).once
+      @klass.expects(:get_original).with("http://#{@klass::GRAPH_DOMAIN}/foo", {}).once
       @klass.get("/foo")
     end
 

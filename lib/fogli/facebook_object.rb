@@ -21,6 +21,10 @@ module Fogli
         end
       end
 
+      # Returns the properties associated with this facebook
+      # object.
+      #
+      # @return [Hash]
       def properties
         @_properties ||= {}
       end
@@ -36,8 +40,8 @@ module Fogli
       end
     end
 
-    # Every facebook object has an id
-    property :id
+    # Every facebook object has an id and typically an updated time
+    property :id, :updated_time
 
     # Populates the properties with the given hash of data. This
     # method also handles parsing non-primitive data such as other
@@ -48,8 +52,12 @@ module Fogli
       self.class.properties.keys.each do |name|
         item = data[name.to_s]
 
-        # TODO: Some items aren't simply strings. Fill in the property
-        # based on its type.
+        if item.is_a?(Hash)
+          # For now, assume its a NamedObject. In the future, we'll be
+          # more careful.
+          item = NamedObject.new.populate_properties(item)
+        end
+
         property_values[name] = item
       end
 
@@ -58,7 +66,9 @@ module Fogli
 
     # Reads a property.
     def read_property(name)
-      property_values[name]
+      value = property_values[name]
+      value = value.name if value.is_a?(NamedObject)
+      value
     end
 
     # Stores the values of the variables properties
