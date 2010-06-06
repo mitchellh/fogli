@@ -1,11 +1,11 @@
 # Fogli
 
-Fogli is a *F*acebook *O*pen *G*raph *Li*brary.
+Fogli is a **F**acebook **O**pen **G**raph **Li**brary.
 
 Although there were a handful of libaries already available for
 the Facebook Graph API, it felt like none truly embraced the object
 relational structure of the data. Facebook refers to the
-_attributes_ and _connections_ of each _object_, which directly map
+`attributes` and `connections` of each `object`, which directly map
 to object oriented concepts.
 
 Therefore, Fogli exposes the various objects of the Facebook graph
@@ -51,3 +51,7 @@ to change:
 
     # You can now access priveleged calls, like so:
     me = User[:me]
+
+    # Or access data as usual, and you'll get back priveleged information:
+    me = User["mitchellh"]
+    me.birthday
