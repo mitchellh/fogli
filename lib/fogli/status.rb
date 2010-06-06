@@ -1,5 +1,5 @@
 module Fogli
-  class Status < RootFacebookObject
+  class Status < FacebookObject
     property :from, :message
 
     connection :comments, :class => :Comment

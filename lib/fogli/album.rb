@@ -1,5 +1,5 @@
 module Fogli
-  class Album < RootFacebookObject
+  class Album < FacebookObject
     property :from, :name, :description, :location, :link, :count, :created_time
 
     connection :photos, :class => :Photo

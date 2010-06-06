@@ -1,5 +1,5 @@
 module Fogli
-  class Group < RootFacebookObject
+  class Group < FacebookObject
     property :owner, :name, :description, :link, :venue, :privacy
 
     connection :feed

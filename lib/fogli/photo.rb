@@ -1,5 +1,5 @@
 module Fogli
-  class Photo < RootFacebookObject
+  class Photo < FacebookObject
     property :from, :tags, :name, :source, :height, :width,
              :link, :created_time
 

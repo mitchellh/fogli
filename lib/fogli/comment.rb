@@ -1,5 +1,5 @@
 module Fogli
-  class Comment < RootFacebookObject
+  class Comment < FacebookObject
     property :from, :message, :created_time
   end
 end

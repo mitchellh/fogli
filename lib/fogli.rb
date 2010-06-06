@@ -20,7 +20,6 @@ module Fogli
   autoload :Exception, 'fogli/exception'
   autoload :FacebookGraph, 'fogli/facebook_graph'
   autoload :FacebookObject, 'fogli/facebook_object'
-  autoload :RootFacebookObject, 'fogli/root_facebook_object'
 
   # User-friendly models
   autoload :Album, 'fogli/album'

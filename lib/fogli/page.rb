@@ -1,5 +1,5 @@
 module Fogli
-  class Page < RootFacebookObject
+  class Page < FacebookObject
     property :name, :category
 
     connection :feed, :tagged

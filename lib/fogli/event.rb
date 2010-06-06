@@ -1,5 +1,5 @@
 module Fogli
-  class Event < RootFacebookObject
+  class Event < FacebookObject
     property :owner, :name, :description, :start_time, :end_time, :location,
              :venue, :privacy
 

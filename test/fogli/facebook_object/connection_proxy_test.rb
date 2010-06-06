@@ -4,7 +4,7 @@ class FacebookObjectConnectionProxyTest < Test::Unit::TestCase
   setup do
     @klass = Fogli::FacebookObject::ConnectionProxy
 
-    @parent = Fogli::RootFacebookObject.new
+    @parent = Fogli::FacebookObject.new
     @connection_name = "friends"
     @connection_options = { :class => :dynamic }
     @instance = @klass.new(@parent, @connection_name, @connection_options)

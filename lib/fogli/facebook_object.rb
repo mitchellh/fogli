@@ -15,14 +15,36 @@ module Fogli
     # (if authorized)
     property :id, :updated_time
 
-    # Propagates the properties and connections to any subclasses
-    # which inherit from FacebookObject. This method is called
-    # automatically by Ruby.
-    def self.inherited(subclass)
-      super
+    class << self
+      # Finds the facebook object associated with the given `id` by
+      # accessing the graph API directly:
+      #
+      #     http://graph.facebook.com/id
+      #
+      # The data is then parsed and the resulting object instance is
+      # returned. If no object is found, nil is returned.
+      #
+      # An additional options hash may be passed into {find}, which
+      # can be used for things like `:fields` or `:metadata`.
+      #
+      # @param [String] id ID of the object
+      # @param [Hash] options A hash of additional options. More info
+      #   above.
+      def find(id, options=nil)
+        # TODO: Do something with options
+        new(get("/#{id}"))
+      end
+      alias :[] :find
 
-      propagate_properties(subclass)
-      propagate_connections(subclass)
+      # Propagates the properties and connections to any subclasses
+      # which inherit from FacebookObject. This method is called
+      # automatically by Ruby.
+      def inherited(subclass)
+        super
+
+        propagate_properties(subclass)
+        propagate_connections(subclass)
+      end
     end
 
     # Initialize a facebook object. If given some data, it will
@@ -31,6 +53,14 @@ module Fogli
     # @param [Hash] data The data for this object.
     def initialize(data=nil)
       populate_properties(data) if data
+    end
+
+    # Override {FacebookGraph#get} to prepend object ID. When calling
+    # {#get} on an instance of a facebook object, its typically
+    # to access a connection. To avoid repetition, we always prepend
+    # the root object's ID.
+    def get(url, *args)
+      super("/#{id}#{url}", *args)
     end
 
     # Customize the inspect method to pretty print Facebook objects

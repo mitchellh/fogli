@@ -1,5 +1,5 @@
 module Fogli
-  class Link < RootFacebookObject
+  class Link < FacebookObject
     property :from, :link, :name, :caption, :description,
              :message
 
