@@ -14,6 +14,7 @@ module Fogli
   # The configuration keys should be self explanatory.
   mattr_accessor :client_id
   mattr_accessor :client_secret
+  mattr_accessor :redirect_uri
   mattr_accessor :access_token
 
   autoload :FacebookGraph, 'fogli/facebook_graph'

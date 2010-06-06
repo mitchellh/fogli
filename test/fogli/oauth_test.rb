@@ -12,11 +12,11 @@ class OAuthObjectTest < Test::Unit::TestCase
       assert_equal expected, @klass.authorize(options)
     end
 
-    should "by default use the global client id" do
+    should "by default use the global client id and redirect uri" do
       Fogli.client_id = "foo"
-      options = { :redirect_uri => "bar" }
+      Fogli.redirect_uri = "bar"
       expected = @klass::AUTHORIZE_URI % ["foo", "bar"]
-      assert_equal expected, @klass.authorize(options)
+      assert_equal expected, @klass.authorize
     end
   end
 
@@ -27,7 +27,7 @@ class OAuthObjectTest < Test::Unit::TestCase
       options = { :redirect_uri => "bar", :code => "baz" }
       merged = options.merge({ :client_id => Fogli.client_id,
                                :client_secret => Fogli.client_secret })
-      @klass.expects(:get).with("/oauth/access_token", :query => merged)
+      @klass.expects(:get).with("/oauth/access_token", :query => merged).returns("")
       @klass.access_token(options)
     end
   end

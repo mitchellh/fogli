@@ -39,7 +39,7 @@ module Fogli
     # to get an access token. This method takes a hash as its sole
     # argument, and has the following possible keys:
     #
-    # * `:redirect_uri` (**required**) - The URI to redirect to after
+    # * `:redirect_uri` (optional) - The URI to redirect to after
     #   the user authorizes. This URI will be given a single parameter
     #   `code` as a GET variable. This should be passed into
     #   {access_token} to finally retrieve the access token.
@@ -48,11 +48,11 @@ module Fogli
     #
     # @param [Hash] options Described above.
     # @return [String] The authorization URL to redirect the user to.
-    def self.authorize(options)
+    def self.authorize(options=nil)
       options = {
         :client_id => Fogli.client_id,
-        :redirect_uri => nil
-      }.merge(options)
+        :redirect_uri => Fogli.redirect_uri
+      }.merge(options || {})
 
       # TODO: Raise exception if client_id or redirect_uri is nil
       AUTHORIZE_URI % [options[:client_id], CGI.escape(options[:redirect_uri])]
@@ -88,12 +88,13 @@ module Fogli
       options = {
         :client_id => Fogli.client_id,
         :client_secret => Fogli.client_secret,
-        :redirect_uri => nil,
+        :redirect_uri => Fogli.redirect_uri,
         :code => nil
       }.merge(options)
 
       # TODO: Raise exception if missing arguments
-      get("/oauth/access_token", :query => options)
+      result = get("/oauth/access_token", :query => options)
+      result.split(/(&|=)/)[2]
     end
   end
 end
