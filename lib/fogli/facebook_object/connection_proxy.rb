@@ -44,6 +44,14 @@ module Fogli
         self
       end
 
+      # Iterate over every object which is part of this
+      # connection. {ConnectionProxy} also includes the `Enumerable`
+      # module so many other methods are available, just look at the
+      # standard library documentation for `Enumerable`.
+      def each(&block)
+        data.each(&block)
+      end
+
       # Returns the class associated with this connection.
       #
       # @param [Hash] raw The raw data associated with the

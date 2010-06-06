@@ -32,6 +32,19 @@ class FacebookObjectConnectionProxyTest < Test::Unit::TestCase
     end
   end
 
+  context "enumerable" do
+    should "be enumerable" do
+      assert @klass.included_modules.include?(Enumerable)
+    end
+
+    should "define each to iterate over the data" do
+      @instance.stubs(:data).returns([1,2,3])
+      sum = 0
+      @instance.each { |i| sum += i }
+      assert_equal 6, sum
+    end
+  end
+
   context "connection class" do
     should "just return the class if specified" do
       @connection_options[:class] = :User
