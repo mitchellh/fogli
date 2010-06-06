@@ -22,3 +22,13 @@ Rake::TestTask.new do |t|
   t.libs << "test"
   t.pattern = 'test/**/*_test.rb'
 end
+
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new do |t|
+    t.options = ['--main', 'README.md', '--markup', 'markdown']
+    t.options += ['--title', 'Fogli Documentation']
+  end
+rescue LoadError
+  puts "Yard not available. Install it with: gem install yard bluecloth"
+end

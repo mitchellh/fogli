@@ -16,7 +16,11 @@ module Fogli
   mattr_accessor :client_secret
   mattr_accessor :access_token
 
-  autoload :User, 'fogli/user'
+  autoload :FacebookGraph, 'fogli/facebook_graph'
   autoload :FacebookObject, 'fogli/facebook_object'
   autoload :RootFacebookObject, 'fogli/root_facebook_object'
+
+  # User-friendly models
+  autoload :OAuth, 'fogli/oauth'
+  autoload :User, 'fogli/user'
 end

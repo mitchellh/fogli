@@ -5,12 +5,6 @@ class FacebookObjectTest < Test::Unit::TestCase
     @klass = Fogli::FacebookObject
   end
 
-  context "httparty" do
-    should "include HTTParty" do
-      assert @klass.included_modules.include?(HTTParty)
-    end
-  end
-
   context "properties" do
     should "have an id property" do
       assert @klass.properties.keys.include?(:id)

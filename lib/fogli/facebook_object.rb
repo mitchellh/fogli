@@ -2,10 +2,7 @@ module Fogli
   # Represents any facebook object. This exposes the common
   # abstractions used by every other facebook object such as the
   # concept of properties and connections.
-  class FacebookObject
-    include HTTParty
-    base_uri "graph.facebook.com"
-
+  class FacebookObject < FacebookGraph
     class << self
       # Defines a property on the object. These properties map
       # directly to keys in the returned JSON from the Facebook

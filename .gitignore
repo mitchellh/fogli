@@ -1,3 +1,5 @@
 .bundle
 *.lock
 test.rb
+.yardoc/
+doc/
