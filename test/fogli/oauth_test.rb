@@ -6,6 +6,11 @@ class OAuthObjectTest < Test::Unit::TestCase
   end
 
   context "authorization URL" do
+    teardown do
+      Fogli.client_id = nil
+      Fogli.redirect_uri = nil
+    end
+
     should "return the URL escape the URI" do
       options = { :client_id => "foo", :redirect_uri => "bar baz" }
       expected = @klass::AUTHORIZE_URI % ["foo", "bar+baz"]
@@ -21,6 +26,11 @@ class OAuthObjectTest < Test::Unit::TestCase
   end
 
   context "access token" do
+    teardown do
+      Fogli.client_id = nil
+      Fogli.client_secret = nil
+    end
+
     should "by default use the global client ID and secret" do
       Fogli.client_id = "foo"
       Fogli.client_secret = "bar"

@@ -15,7 +15,25 @@ module Fogli
   #     Fogli::FacebookGraph.get("/mitchellh")
   #
   class FacebookGraph
+    GRAPH_DOMAIN = "graph.facebook.com"
     include HTTParty
-    base_uri "graph.facebook.com"
+
+    class << self
+      alias_method :get_original, :get
+
+      # Overriding HTTParty's `get` method to handle access
+      # tokens.
+      def get(url, options=nil)
+        if Fogli.access_token
+          options ||= {}
+          options[:query] ||= {}
+          options[:query].merge!(:access_token => Fogli.access_token)
+        end
+
+        method = "http"
+        method = "https" if options && options[:query] && options[:query][:access_token]
+        get_original("#{method}://#{GRAPH_DOMAIN}#{url}", options)
+      end
+    end
   end
 end
