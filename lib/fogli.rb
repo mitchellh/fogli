@@ -17,6 +17,7 @@ module Fogli
   mattr_accessor :redirect_uri
   mattr_accessor :access_token
 
+  autoload :Exception, 'fogli/exception'
   autoload :FacebookGraph, 'fogli/facebook_graph'
   autoload :FacebookObject, 'fogli/facebook_object'
   autoload :RootFacebookObject, 'fogli/root_facebook_object'

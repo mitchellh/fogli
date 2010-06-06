@@ -33,4 +33,16 @@ class FacebookGraphTest < Test::Unit::TestCase
       @klass.get("/foo")
     end
   end
+
+  context "error checking" do
+    should "return the data if the data is fine" do
+      data = { :foo => "bar" }
+      assert_equal data, @klass.error_check(data)
+    end
+
+    should "raise an exception if the data represents an error" do
+      data = { "error" => { "type" => "foo", "message" => "baz" }}
+      assert_raises(Fogli::Exception) { @klass.error_check(data) }
+    end
+  end
 end

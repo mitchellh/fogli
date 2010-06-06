@@ -32,7 +32,21 @@ module Fogli
 
         method = "http"
         method = "https" if options && options[:query] && options[:query][:access_token]
-        get_original("#{method}://#{GRAPH_DOMAIN}#{url}", options)
+        error_check(get_original("#{method}://#{GRAPH_DOMAIN}#{url}", options))
+      end
+
+      # Checks a response from the Graph API for any errors, and
+      # raises an {Exception} if any are found. If no errors are
+      # found, simply returns the response back.
+      def error_check(response)
+        if response["error"]
+          data = response["error"]
+          raise Exception.new(data["type"], data["message"])
+        end
+
+        response
+      rescue NoMethodError
+        response
       end
     end
   end
