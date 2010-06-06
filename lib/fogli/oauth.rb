@@ -35,6 +35,8 @@ module Fogli
   class OAuth < FacebookGraph
     AUTHORIZE_URI = "http://graph.facebook.com/oauth/authorize?client_id=%s&redirect_uri=%s"
 
+    extend Util::Options
+
     # Returns the authorization URL to redirect the user to in order
     # to get an access token. This method takes a hash as its sole
     # argument, and has the following possible keys:
@@ -49,12 +51,12 @@ module Fogli
     # @param [Hash] options Described above.
     # @return [String] The authorization URL to redirect the user to.
     def self.authorize(options=nil)
-      options = {
+      defaults = {
         :client_id => Fogli.client_id,
         :redirect_uri => Fogli.redirect_uri
-      }.merge(options || {})
+      }
 
-      # TODO: Raise exception if client_id or redirect_uri is nil
+      options = verify_options(options, defaults.keys, defaults)
       AUTHORIZE_URI % [options[:client_id], CGI.escape(options[:redirect_uri])]
     end
 
@@ -85,14 +87,14 @@ module Fogli
     # @param [Hash] options Described above.
     # @return [String] Access token
     def self.access_token(options)
-      options = {
+      defaults = {
         :client_id => Fogli.client_id,
         :client_secret => Fogli.client_secret,
         :redirect_uri => Fogli.redirect_uri,
         :code => nil
-      }.merge(options)
+      }
 
-      # TODO: Raise exception if missing arguments
+      options = verify_options(options, defaults.keys, defaults)
       result = get("/oauth/access_token", :query => options)
       result.split(/(&|=)/)[2]
     end

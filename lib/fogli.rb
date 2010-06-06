@@ -26,4 +26,8 @@ module Fogli
   autoload :NamedObject, 'fogli/named_object'
   autoload :OAuth, 'fogli/oauth'
   autoload :User, 'fogli/user'
+
+  module Util
+    autoload :Options, 'fogli/util/options'
+  end
 end
