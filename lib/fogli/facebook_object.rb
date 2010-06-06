@@ -17,6 +17,8 @@ module Fogli
     # which inherit from FacebookObject. This method is called
     # automatically by Ruby.
     def self.inherited(subclass)
+      super
+
       propagate_properties(subclass)
       propagate_connections(subclass)
     end
