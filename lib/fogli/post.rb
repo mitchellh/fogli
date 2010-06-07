@@ -4,5 +4,15 @@ module Fogli
              :source, :icon, :attribution, :actions, :likes, :created_time
 
     connection :comments, :class => :Comment
+
+    # Like a post. This method requires authorization.
+    def like!
+      post("/likes")
+    end
+
+    # Unlike a post. This method requires authorization.
+    def unlike!
+      delete("/likes")
+    end
   end
 end
