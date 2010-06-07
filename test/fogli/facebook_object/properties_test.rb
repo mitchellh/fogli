@@ -61,6 +61,11 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
       assert_equal "foo", @instance.id
     end
 
+    should "set the properties based on the hash data [symbol]" do
+      @instance.populate_properties({:id => "foo"})
+      assert_equal "foo", @instance.id
+    end
+
     should "detect and store NamedObjects" do
       @instance.populate_properties({"id" => {"name" => "foo"}})
       assert @instance.property_values[:id].is_a?(Fogli::NamedObject)

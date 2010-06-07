@@ -49,12 +49,14 @@ module Fogli
         property_values.clear
 
         self.class.properties.keys.each do |name|
-          item = data[name.to_s]
+          # Try both the string and symbol lookup to get the item
+          # associated with a key
+          item = data[name.to_s] || data [name]
 
           if item.is_a?(Hash)
             # For now, assume its a NamedObject. In the future, we'll be
             # more careful.
-            item = NamedObject.new.populate_properties(item)
+            item = NamedObject.new(item.merge(:_loaded => true))
           end
 
           property_values[name] = item
