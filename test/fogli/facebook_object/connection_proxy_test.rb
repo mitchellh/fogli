@@ -37,6 +37,11 @@ class FacebookObjectConnectionProxyTest < Test::Unit::TestCase
       assert @klass.included_modules.include?(Enumerable)
     end
 
+    should "be able to access data via []" do
+      @instance.stubs(:data).returns([1,2,3])
+      assert_equal 2, @instance[1]
+    end
+
     should "define each to iterate over the data" do
       @instance.stubs(:data).returns([1,2,3])
       sum = 0

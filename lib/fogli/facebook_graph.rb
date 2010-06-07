@@ -1,3 +1,7 @@
+require 'cgi'
+require 'restclient'
+require 'json'
+
 module Fogli
   # The most basic level access to the Facebook Graph. This class only
   # has access to the `get`, `post`, etc. methods to query the
@@ -24,15 +28,12 @@ module Fogli
   #
   class FacebookGraph
     GRAPH_DOMAIN = "graph.facebook.com"
-    include HTTParty
 
     class << self
       # Override default HTTParty behavior to go through our request
       # method to make sure that the access token is properly set if
       # needed.
       [:get, :post, :delete].each do |method|
-        alias_method "#{method}_original".to_sym, method
-
         define_method(method) do |*args|
           request(method, *args)
         end
@@ -42,33 +43,61 @@ module Fogli
       # options. This method will inject the Facebook `access_token`
       # if it is available, and will properly change the method to
       # "https" if needed.
-      def request(type, url, options=nil)
-        options ||= {}
+      def request(type, url, params=nil)
+        params ||= {}
 
         if Fogli.access_token
-          options[:query] ||= {}
-          options[:query].merge!(:access_token => Fogli.access_token)
+          params ||= {}
+          params.merge!(:access_token => Fogli.access_token)
         end
 
         method = "http"
-        method = "https" if options && options[:query] && options[:query][:access_token]
+        method = "https" if params[:access_token]
 
-        original = "#{type}_original".to_sym
-        error_check(send(original, "#{method}://#{GRAPH_DOMAIN}#{url}", options))
+        url = "#{method}://#{GRAPH_DOMAIN}#{url}"
+        if !params.empty? && [:get, :delete].include?(type)
+          # For GET and DELETE, we're responsible for appending any
+          # query parameters onto the end of the URL
+          params = params.inject([]) do |acc, data|
+            k, v = data
+            acc << "#{k}=#{CGI.escape(v)}"
+            acc
+          end
+
+          url += "?#{params.join("&")}"
+          params = {}
+        end
+
+        error_check { RestClient.send(type, url, params) }
       end
 
-      # Checks a response from the Graph API for any errors, and
-      # raises an {Exception} if any are found. If no errors are
-      # found, simply returns the response back.
-      def error_check(response)
-        if response["error"]
-          data = response["error"]
+      # Yields a block, checking for any errors in a request. If no
+      # errors are detected, decodes JSON and returns the result.
+      def error_check
+        response = begin
+          yield
+        rescue RestClient::Exception => e
+          e.response
+        end
+
+        data = parse_response(response)
+        if data.is_a?(Hash) && data["error"]
+          data = data["error"]
           raise Exception.new(data["type"], data["message"])
         end
 
-        response
+        data
       rescue NoMethodError
-        response
+        data
+      end
+
+      # Parses a response depending on the content type it sent back.
+      def parse_response(response)
+        type = response.headers[:content_type]
+        return response.body if type.include?("text/plain")
+        return JSON.parse(response.body)
+      rescue JSON::ParserError
+        response.body
       end
     end
 

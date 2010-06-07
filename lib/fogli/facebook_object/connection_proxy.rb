@@ -44,6 +44,14 @@ module Fogli
         self
       end
 
+      # Access a specific item in the connection.
+      #
+      # @param [Integer] index
+      # @return [Object]
+      def [](index)
+        data[index]
+      end
+
       # Iterate over every object which is part of this
       # connection. {ConnectionProxy} also includes the `Enumerable`
       # module so many other methods are available, just look at the

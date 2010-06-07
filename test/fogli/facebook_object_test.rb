@@ -64,15 +64,17 @@ class FacebookObjectTest < Test::Unit::TestCase
       @instance = @klass.new
     end
 
-    should "prepend any get requests with the ID" do
-      id = "foo"
-      @klass.expects(:get_original).with() do |url, options|
-        assert url =~ /\/foo\/bar$/, "Invalid URL: #{url}"
-        true
-      end
+    [:get, :post, :delete].each do |method|
+      should "prepend any #{method} requests with the ID" do
+        id = "foo"
+        RestClient.expects(method).with() do |url, other|
+          assert url =~ /\/foo\/bar$/, "Invalid URL: #{url}"
+          true
+        end
 
-      @instance.stubs(:id).returns(id)
-      @instance.get("/bar")
+        @instance.stubs(:id).returns(id)
+        @instance.send(method, "/bar")
+      end
     end
   end
 end

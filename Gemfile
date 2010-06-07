@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
-gem "httparty", "~> 0.5.2"
+gem "rest-client", "~> 1.5.1"
+gem "json_pure", "~> 1.2.0"
 
 group :development do
   gem "sinatra" # for examples

@@ -5,12 +5,6 @@ class FacebookGraphTest < Test::Unit::TestCase
     @klass = Fogli::FacebookGraph
   end
 
-  context "httparty" do
-    should "include HTTParty" do
-      assert @klass.included_modules.include?(HTTParty)
-    end
-  end
-
   context "requesting" do
     teardown do
       Fogli.access_token = nil
@@ -23,38 +17,55 @@ class FacebookGraphTest < Test::Unit::TestCase
       end
     end
 
-    should "use proper original method" do
-      @klass.expects(:post_original).once
-      @klass.request(:post, "/foo")
-    end
-
     should "use http by default" do
-      @klass.expects(:get_original).with("http://#{@klass::GRAPH_DOMAIN}/foo", {}).once
+      RestClient.expects(:get).with("http://#{@klass::GRAPH_DOMAIN}/foo", {}).once
       @klass.request(:get, "/foo")
     end
 
     should "use https if an access token is set" do
-      options = {:query => {:access_token => "bar"}}
-      @klass.expects(:get_original).with("https://#{@klass::GRAPH_DOMAIN}/foo", options).once
-      @klass.request(:get, "/foo", options)
+      Fogli.access_token = "foo"
+      RestClient.expects(:get).with("https://#{@klass::GRAPH_DOMAIN}/foo?access_token=foo", {}).once
+      @klass.request(:get, "/foo")
     end
 
-    should "add access token if set statically" do
-      Fogli.access_token = "foo"
-      @klass.expects(:get_original).with(anything, {:query => {:access_token => "foo"}}).once
-      @klass.request(:get, "/foo")
+    should "append parameters for GET/DELETE" do
+      params = { "foo" => "bar baz" }
+      RestClient.expects(:get).with("http://#{@klass::GRAPH_DOMAIN}/foo?foo=bar+baz", {}).once
+      @klass.request(:get, "/foo", params)
+    end
+
+    should "pass params into function for POST" do
+      params = { :foo => :baz }
+      RestClient.expects(:post).with("http://#{@klass::GRAPH_DOMAIN}/foo", params).once
+      @klass.request(:post, "/foo", params)
     end
   end
 
   context "error checking" do
+    def response(data)
+      @klass.stubs(:parse_response).returns(data)
+    end
+
     should "return the data if the data is fine" do
-      data = { :foo => "bar" }
-      assert_equal data, @klass.error_check(data)
+      data = { "foo" => "bar" }
+
+      assert_equal data, @klass.error_check { response(data) }
     end
 
     should "raise an exception if the data represents an error" do
       data = { "error" => { "type" => "foo", "message" => "baz" }}
-      assert_raises(Fogli::Exception) { @klass.error_check(data) }
+      assert_raises(Fogli::Exception) do
+        @klass.error_check { response(data) }
+      end
+    end
+
+    should "catch exceptions with responses" do
+      data = { "foo" => "bar" }
+      result = @klass.error_check do
+        e = RestClient::Exception.new
+        e.response = response(data)
+        raise e
+      end
     end
   end
 end

@@ -153,7 +153,7 @@ module Fogli
       }
 
       options = verify_options(options, defaults.keys, defaults)
-      result = get("/oauth/access_token", :query => options)
+      result = get("/oauth/access_token", options)
       result.split(/(&|=)/)[2]
     end
   end

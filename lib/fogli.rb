@@ -1,5 +1,3 @@
-require 'httparty'
-
 # Try to load the Rails ActiveSupport module accessors
 # But fall back to our own if it doesn't exist.
 begin

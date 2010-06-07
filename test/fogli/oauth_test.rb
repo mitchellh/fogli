@@ -49,7 +49,7 @@ class OAuthObjectTest < Test::Unit::TestCase
       options = { :redirect_uri => "bar", :code => "baz" }
       merged = options.merge({ :client_id => Fogli.client_id,
                                :client_secret => Fogli.client_secret })
-      @klass.expects(:get).with("/oauth/access_token", :query => merged).returns("")
+      @klass.expects(:get).with("/oauth/access_token", merged).returns("")
       @klass.access_token(options)
     end
   end

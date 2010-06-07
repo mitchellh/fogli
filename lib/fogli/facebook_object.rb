@@ -61,12 +61,14 @@ module Fogli
       super("/#{id}")
     end
 
-    # Override `FacebookGraph#get` to prepend object ID. When calling
-    # {#get} on an instance of a facebook object, its typically
+    # Override request methods to prepend object ID. When making a
+    # request on an instance of a facebook object, its typically
     # to access a connection. To avoid repetition, we always prepend
     # the root object's ID.
-    def get(url, *args)
-      super("/#{id}#{url}", *args)
+    [:get, :post, :delete].each do |method|
+      define_method(method) do |url, *args|
+        super("/#{id}#{url}", *args)
+      end
     end
 
     # Customize the inspect method to pretty print Facebook objects
