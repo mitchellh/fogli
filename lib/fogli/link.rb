@@ -4,9 +4,5 @@ module Fogli
              :message
 
     connection :comments, :class => :Comment
-
-    def like!
-      post("/likes")
-    end
   end
 end

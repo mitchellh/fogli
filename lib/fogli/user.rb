@@ -7,7 +7,7 @@ module Fogli
              :political, :verified, :significant_other, :timezone
 
     connection :friends, :class => :User
-    connection :home, :feed, :tagged, :posts
+    connection :home, :feed, :tagged, :posts, :class => :Post
     connection :activities, :interests, :music, :books, :movies,
                :television, :class => :CategorizedObject
     connection :likes, :class => :Page
