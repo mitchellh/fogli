@@ -26,6 +26,18 @@ module Fogli
   #     user.first_name # "Mitchell"
   #     user.link       # nil, since we didn't request it
   #
+  # # Eager Loading Connections
+  #
+  # Another optimization technique: If you know in advance you'll need
+  # access to connections on the object, you can optimize the queries
+  # more by telling {FacebookObject} in advance. The object can then
+  # load the connection at the same time as the properties.
+  #
+  #     user = Fogli::User.find("mitchellh", :include => :friends)
+  #     user.first_name      # HTTP request is made here
+  #     user.friends[0].name # No request is made here, since it was downloaded
+  #                          # in one request with the properties
+  #
   # # Checking if an Object Exists
   #
   # Since objects are lazy loaded, you can't check the return value of
@@ -47,6 +59,9 @@ module Fogli
     include Properties
     include Connections
     extend Util::Options
+
+    attr_reader :_fields
+    attr_reader :_raw
 
     # Every facebook object has an id and typically an updated time
     # (if authorized)
@@ -82,9 +97,11 @@ module Fogli
       # @return [FacebookObject]
       def find(id, options=nil)
         data = { :_loaded => false, :id => id }
-        options = verify_options(options, :valid_keys => [:fields])
-        data[:_fields] = options[:fields] if options[:fields]
-
+        options = verify_options(options, :valid_keys => [:fields, :include])
+        data[:_fields] = []
+        data[:_fields] << [options[:fields]] if options[:fields]
+        data[:_fields] << [options[:include]] if options[:include]
+        data[:_fields].flatten!
 
         # Initialize the object with the loaded flag off and with the
         # ID, so that the object is lazy loaded on first use.
@@ -129,7 +146,9 @@ module Fogli
 
       # Pull out any "special" values which may be in the data hash
       @_loaded = !!data.delete(:_loaded)
-      @_fields = data.delete(:_fields)
+      @_fields = data.delete(:_fields) || []
+      @_fields.collect! { |f| f.to_sym }
+
       populate_properties(data) if !data.empty?
     end
 
@@ -146,12 +165,10 @@ module Fogli
     # first access of a property.
     def load!
       params = {}
-      if @_fields
-        @_fields = @_fields.join(",") if @_fields.is_a?(Array)
-        params[:fields] = @_fields.to_s
-      end
+      params[:fields] = _fields.join(",") if !_fields.empty?
 
-      populate_properties(get(params))
+      @_raw = get(params)
+      populate_properties(@_raw)
       @_loaded = true
       self
     end

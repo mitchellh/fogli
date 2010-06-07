@@ -26,13 +26,28 @@ module Fogli
         @parent = parent
         @connection_name = connection_name
         @connection_options = connection_options
+        @_loaded = false
+      end
+
+      # Returns a boolean value denoting whether or not this
+      # connection has been loaded yet.
+      def loaded?
+        !!@_loaded
       end
 
       # Loads the data represented by this proxy. This method handles
       # making the request as well as initializing the data on the
       # connection class.
       def load!
-        raw = parent.get("/#{connection_name}")
+        raw = if parent._fields.include?(connection_name.to_sym)
+          # This is marked for eager loading from the parent, so load
+          # the parent if we need to
+          parent.load! if !parent.loaded?
+          parent._raw[connection_name.to_s]
+        else
+          # Otherwise load the data via HTTP
+          parent.get("/#{connection_name}")
+        end
 
         @data = []
         if raw && raw["data"]
@@ -41,6 +56,7 @@ module Fogli
           end
         end
 
+        @_loaded = true
         self
       end
 
@@ -49,6 +65,7 @@ module Fogli
       # @param [Integer] index
       # @return [Object]
       def [](index)
+        load! if !loaded?
         data[index]
       end
 
@@ -57,6 +74,7 @@ module Fogli
       # module so many other methods are available, just look at the
       # standard library documentation for `Enumerable`.
       def each(&block)
+        load! if !loaded?
         data.each(&block)
       end
 

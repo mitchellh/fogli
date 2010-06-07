@@ -45,7 +45,17 @@ class FacebookObjectTest < Test::Unit::TestCase
 
       should "be able to limit by fields" do
         result = @klass.find(:foo, :fields => "name")
-        assert_equal "name", result.instance_variable_get(:@_fields)
+        assert_equal [:name], result.instance_variable_get(:@_fields)
+      end
+
+      should "be able to eager load relationships" do
+        result = @klass.find(:foo, :include => :bar)
+        assert_equal [:bar], result.instance_variable_get(:@_fields)
+      end
+
+      should "properly merge fields and include" do
+        result = @klass.find(:foo, :include => :bar, :fields => :foo)
+        assert_equal [:foo, :bar], result.instance_variable_get(:@_fields)
       end
     end
 
@@ -98,7 +108,13 @@ class FacebookObjectTest < Test::Unit::TestCase
     context "loading" do
       setup do
         @id = "foobar"
-        @instance.stubs(:get).returns({:id => @id})
+        @data = {:id => @id}
+        @instance.stubs(:get).returns(@data)
+      end
+
+      should "store the raw data" do
+        @instance.load!
+        assert_equal @data, @instance._raw
       end
 
       should "get only the fields specified, if specified" do
