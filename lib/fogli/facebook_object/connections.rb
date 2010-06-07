@@ -48,7 +48,6 @@ module Fogli
       def connection_values
         @_connection_values ||= Hash.new do |h,k|
           options = self.class.connections[k]
-          require 'unroller'
           h[k] = ConnectionProxy.new(self, k, options)
         end
       end
