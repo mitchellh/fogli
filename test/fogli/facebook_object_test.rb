@@ -42,6 +42,11 @@ class FacebookObjectTest < Test::Unit::TestCase
         assert !result.loaded?
         assert_equal :foo, result.id
       end
+
+      should "be able to limit by fields" do
+        result = @klass.find(:foo, :fields => "name")
+        assert_equal "name", result.instance_variable_get(:@_fields)
+      end
     end
 
     context "existence checking" do
@@ -94,6 +99,13 @@ class FacebookObjectTest < Test::Unit::TestCase
       setup do
         @id = "foobar"
         @instance.stubs(:get).returns({:id => @id})
+      end
+
+      should "get only the fields specified, if specified" do
+        instance = @klass.find(@id, :fields => [:a, :b, :c])
+        instance.stubs(:get).returns({})
+        instance.expects(:get).with(:fields => "a,b,c").once.returns({})
+        instance.load!
       end
 
       should "populate properties with the data" do

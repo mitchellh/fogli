@@ -108,7 +108,11 @@ module Fogli
         :redirect_uri => Fogli.redirect_uri,
       }
 
-      options = verify_options(options, defaults.keys, defaults)
+      options = verify_options(options, {
+                                 :required_keys => defaults.keys,
+                                 :valid_keys => [defaults.keys, :scope].flatten,
+                                 :default => defaults
+                               })
       result = AUTHORIZE_URI % [options[:client_id], CGI.escape(options[:redirect_uri])]
       if options[:scope]
         options[:scope] = [options[:scope]] if !options.is_a?(Array)
@@ -152,7 +156,10 @@ module Fogli
         :code => nil
       }
 
-      options = verify_options(options, defaults.keys, defaults)
+      options = verify_options(options, {
+                                 :required_keys => defaults.keys,
+                                 :default => defaults
+                               })
       result = get("/oauth/access_token", options)
       result.split(/(&|=)/)[2]
     end

@@ -9,17 +9,20 @@ module Fogli
       # @param [Array] required Array of required keys.
       # @param [Hash] defaults
       # @return [Hash]
-      def verify_options(options, required=nil, defaults=nil)
-        ops = defaults.dup || {} rescue {}
-        ops.merge!(options || {})
+      def verify_options(data, options=nil)
+        data ||= {}
+        options ||= {}
+        options[:valid_keys] ||= options[:default].keys if options[:default]
 
-        if required
-          unused = required.inject([]) do |acc, k|
-            acc << k if !ops[k]
-            acc
-          end
+        # Merge in the default data and remove any invalid keys if
+        # valid keys are specified.
+        ops = options[:default] || {}
+        ops.merge!(data)
+        ops.reject! { |k,v| !options[:valid_keys].include?(k) } if options[:valid_keys]
 
-          raise ArgumentError.new("Missing required options: #{unused.inspect}") if !unused.empty?
+        if options[:required_keys]
+          required = ops.reject { |k,v| !options[:required_keys].include?(k) || v.nil? }
+          raise ArgumentError.new("Missing required options: #{options[:required_keys].inspect}") if required.length != options[:required_keys].length
         end
 
         ops

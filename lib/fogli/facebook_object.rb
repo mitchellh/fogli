@@ -13,9 +13,18 @@ module Fogli
   # request to Facebook then, but instead defers the call to when the
   # first property is accessed.
   #
-  #     user = Fogli::FacebookObject["mitchellh"]
+  #     user = Fogli::User["mitchellh"]
   #     user.first_name # HTTP request is made here
   #     user.last_name  # Loaded already so not request is made
+  #
+  # # Finding an Object, but Selecting Specific Fields
+  #
+  # To conserve bandwidth and lower transfer time, you can select only
+  # specific fields of an object. An example is shown below:
+  #
+  #     user = Fogli::User.find("mitchellh", :fields => [:first_name, :last_name])
+  #     user.first_name # "Mitchell"
+  #     user.link       # nil, since we didn't request it
   #
   # # Checking if an Object Exists
   #
@@ -37,6 +46,7 @@ module Fogli
 
     include Properties
     include Connections
+    extend Util::Options
 
     # Every facebook object has an id and typically an updated time
     # (if authorized)
@@ -51,13 +61,34 @@ module Fogli
       # if you only care about if the object exists, but not about
       # it's properties.
       #
+      # # Examples
+      #
+      # ## Finding a Specific Object
+      #
+      #     FacebookObject.find("mitchellh")
+      #
+      # ## Restricting Fields Returned
+      #
+      # It is also possible to restrict a find to select certain fields.
+      # If you know you're only going to use certain fields (such as
+      # `first_name` and `last_name`), then restricting the select to
+      # certain fields can be more efficient:
+      #
+      #     User.find("mitchellh", :fields => [:first_name, :last_name])
+      #
       # @param [String] id ID of the object
       #   above.
+      # @param [Hash] options Options such as `fields`.
       # @return [FacebookObject]
-      def find(id)
+      def find(id, options=nil)
+        data = { :_loaded => false, :id => id }
+        options = verify_options(options, :valid_keys => [:fields])
+        data[:_fields] = options[:fields] if options[:fields]
+
+
         # Initialize the object with the loaded flag off and with the
         # ID, so that the object is lazy loaded on first use.
-        new(:_loaded => false, :id => id)
+        new(data)
       end
       alias :[] :find
 
@@ -98,6 +129,7 @@ module Fogli
 
       # Pull out any "special" values which may be in the data hash
       @_loaded = !!data.delete(:_loaded)
+      @_fields = data.delete(:_fields)
       populate_properties(data) if !data.empty?
     end
 
@@ -113,7 +145,13 @@ module Fogli
     # Loads the data from Facebook. This is typically called once on
     # first access of a property.
     def load!
-      populate_properties(get)
+      params = {}
+      if @_fields
+        @_fields = @_fields.join(",") if @_fields.is_a?(Array)
+        params[:fields] = @_fields.to_s
+      end
+
+      populate_properties(get(params))
       @_loaded = true
       self
     end
