@@ -13,10 +13,7 @@ module Fogli
           options = names.last
           options = {} if !options.kind_of?(Hash)
 
-          # Merge in the defaults
-          options = {
-            :class => :dynamic
-          }.merge(options)
+          raise ArgumentError.new("`:class` is required for a connection.") if !options[:class]
 
           names.each do |name|
             next if name.kind_of?(Hash)

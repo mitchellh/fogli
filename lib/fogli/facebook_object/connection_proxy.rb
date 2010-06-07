@@ -68,13 +68,7 @@ module Fogli
       #   connection options.
       # @return [Class]
       def connection_class(raw)
-        klass = connection_options[:class]
-        if klass == :dynamic
-          # Dynamic, figure it out based on the "type" given by FB
-          klass = raw["type"].capitalize.to_sym
-        end
-
-        Fogli.const_get(klass)
+        Fogli.const_get(connection_options[:class])
       end
     end
   end

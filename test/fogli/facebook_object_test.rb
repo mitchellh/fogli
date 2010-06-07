@@ -24,7 +24,7 @@ class FacebookObjectTest < Test::Unit::TestCase
     end
 
     should "propagate connections to subclasses" do
-      @klass.connection :foo
+      @klass.connection(:foo, :class => :bar)
       @subklass = Class.new(@klass)
       assert @subklass.connections.keys.include?(:foo)
       @klass.connections.clear

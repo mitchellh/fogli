@@ -55,10 +55,5 @@ class FacebookObjectConnectionProxyTest < Test::Unit::TestCase
       @connection_options[:class] = :User
       assert_equal Fogli::User, @instance.connection_class({})
     end
-
-    should "use the class specified by Facebook for :dynamic" do
-      @connection_options[:class] = :dynamic
-      assert_equal Fogli::Status, @instance.connection_class({ "type" => "status" })
-    end
   end
 end

@@ -16,25 +16,31 @@ class FacebookObjectConnectionsTest < Test::Unit::TestCase
       end
 
       should "be able to define a connection" do
-        @klass.connection(:foo)
+        @klass.connection(:foo, :class => :bar)
         assert @klass.connections.keys.include?(:foo)
       end
 
       should "be able to define multiple connections" do
-        @klass.connection(:foo, :bar)
+        @klass.connection(:foo, :bar, :class => :foo)
         assert @klass.connections.keys.include?(:foo)
         assert @klass.connections.keys.include?(:bar)
       end
 
+      should "raise an exception if a class is not specified" do
+        assert_raises(ArgumentError) {
+          @klass.connection(:foo)
+        }
+      end
+
       should "be able to define options" do
-        @klass.connection(:foo, :bar => :baz)
+        @klass.connection(:foo, :class => :baz)
         assert @klass.connections.keys.include?(:foo)
-        assert_equal :baz, @klass.connections[:foo][:bar]
+        assert_equal :baz, @klass.connections[:foo][:class]
       end
 
       should "propagate connections" do
         @subklass = Class.new(@klass)
-        @klass.connection :foo
+        @klass.connection(:foo, :class => :bar)
         assert !@subklass.connections.keys.include?(:foo)
         @klass.propagate_connections(@subklass)
         assert @subklass.connections.keys.include?(:foo)
