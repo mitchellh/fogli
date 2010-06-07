@@ -55,7 +55,13 @@ module Fogli
       populate_properties(data) if data
     end
 
-    # Override {FacebookGraph#get} to prepend object ID. When calling
+    # Delete an object. This always requires an access token. If you
+    # do not yet have an access token, you must get one via {OAuth}.
+    def delete
+      super("/#{id}")
+    end
+
+    # Override `FacebookGraph#get` to prepend object ID. When calling
     # {#get} on an instance of a facebook object, its typically
     # to access a connection. To avoid repetition, we always prepend
     # the root object's ID.

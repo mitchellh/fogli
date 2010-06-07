@@ -11,26 +11,38 @@ class FacebookGraphTest < Test::Unit::TestCase
     end
   end
 
-  context "getting" do
+  context "requesting" do
     teardown do
       Fogli.access_token = nil
     end
 
+    [:get, :post, :delete].each do |method|
+      should "properly request #{method} type" do
+        @klass.expects(:request).with(method, "/foo", {}).once
+        @klass.send(method, "/foo", {})
+      end
+    end
+
+    should "use proper original method" do
+      @klass.expects(:post_original).once
+      @klass.request(:post, "/foo")
+    end
+
     should "use http by default" do
       @klass.expects(:get_original).with("http://#{@klass::GRAPH_DOMAIN}/foo", {}).once
-      @klass.get("/foo")
+      @klass.request(:get, "/foo")
     end
 
     should "use https if an access token is set" do
       options = {:query => {:access_token => "bar"}}
       @klass.expects(:get_original).with("https://#{@klass::GRAPH_DOMAIN}/foo", options).once
-      @klass.get("/foo", options)
+      @klass.request(:get, "/foo", options)
     end
 
     should "add access token if set statically" do
       Fogli.access_token = "foo"
       @klass.expects(:get_original).with(anything, {:query => {:access_token => "foo"}}).once
-      @klass.get("/foo")
+      @klass.request(:get, "/foo")
     end
   end
 
