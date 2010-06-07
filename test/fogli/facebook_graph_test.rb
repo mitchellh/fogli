@@ -68,4 +68,34 @@ class FacebookGraphTest < Test::Unit::TestCase
       end
     end
   end
+
+  context "parsing response" do
+    setup do
+      @headers = {}
+      @body = "[1]"
+
+      @response = mock("response")
+      @response.stubs(:headers).returns(@headers)
+      @response.stubs(:body).returns(@body)
+    end
+
+    should "simply return if the content-type is text/plain" do
+      @headers[:content_type] = "text/plain; foo=bar"
+      assert_equal @body, @klass.parse_response(@response)
+    end
+
+    should "parse JSON otherwise" do
+      @headers[:content_type] = "anything"
+      result= @klass.parse_response(@response)
+      assert result.is_a?(Array)
+      assert_equal 1, result[0]
+    end
+
+    should "return the raw body if a JSON parse error occurs" do
+      @headers[:content_type] = "whatever"
+      @body = "true"
+      @response.stubs(:body).returns(@body)
+      assert_equal @body, @klass.parse_response(@response)
+    end
+  end
 end
