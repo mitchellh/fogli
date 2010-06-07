@@ -76,20 +76,8 @@ module Fogli
       # if you only care about if the object exists, but not about
       # it's properties.
       #
-      # # Examples
-      #
-      # ## Finding a Specific Object
-      #
-      #     FacebookObject.find("mitchellh")
-      #
-      # ## Restricting Fields Returned
-      #
-      # It is also possible to restrict a find to select certain fields.
-      # If you know you're only going to use certain fields (such as
-      # `first_name` and `last_name`), then restricting the select to
-      # certain fields can be more efficient:
-      #
-      #     User.find("mitchellh", :fields => [:first_name, :last_name])
+      # For examples on how to use this method, please view the
+      # documentation for the entire {FacebookObject} class.
       #
       # @param [String] id ID of the object
       #   above.
