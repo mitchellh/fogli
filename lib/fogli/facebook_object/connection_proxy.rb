@@ -6,12 +6,11 @@ module Fogli
     # every connection represented by the Facebook Graph except for
     # "picture" which is handled as a special case.
     class ConnectionProxy
-      include Enumerable
+      include ScopeMethods
 
       attr_reader :parent
       attr_reader :connection_name
       attr_reader :connection_options
-      attr_reader :data
 
       # Initializes a connection proxy. The actual data associated
       # with the proxy is not actually loaded until {#load!} is called.
@@ -26,56 +25,48 @@ module Fogli
         @parent = parent
         @connection_name = connection_name
         @connection_options = connection_options
-        @_loaded = false
       end
 
-      # Returns a boolean value denoting whether or not this
-      # connection has been loaded yet.
-      def loaded?
-        !!@_loaded
-      end
-
-      # Loads the data represented by this proxy. This method handles
-      # making the request as well as initializing the data on the
-      # connection class.
-      def load!
-        raw = if parent._fields.include?(connection_name.to_sym)
-          # This is marked for eager loading from the parent, so load
-          # the parent if we need to
-          parent.load! if !parent.loaded?
-          parent._raw[connection_name.to_s]
-        else
-          # Otherwise load the data via HTTP
-          parent.get("/#{connection_name}")
-        end
-
-        @data = []
-        if raw && raw["data"]
-          @data = raw["data"].collect do |raw_item|
-            connection_class(raw_item).new(raw_item)
-          end
-        end
-
-        @_loaded = true
-        self
-      end
-
-      # Access a specific item in the connection.
+      # Returns a scope for all of the data which is part of this
+      # connection.
       #
-      # @param [Integer] index
-      # @return [Object]
-      def [](index)
-        load! if !loaded?
-        data[index]
+      # @return [ConnectionScope]
+      def all
+        # TODO: Cache this value so that the subsequent loads are also
+        # cached.
+        ConnectionScope.new(self)
       end
 
-      # Iterate over every object which is part of this
-      # connection. {ConnectionProxy} also includes the `Enumerable`
-      # module so many other methods are available, just look at the
-      # standard library documentation for `Enumerable`.
-      def each(&block)
-        load! if !loaded?
-        data.each(&block)
+      # Loads the data represented by this proxy given the scope. The
+      # proxy itself doesn't cache any data. All the caching is done
+      # on the scope itself.
+      #
+      # **Note:** This method should never be called
+      # manually. Instead, using the various scope methods, and this
+      # method will be called automatically.
+      #
+      # @param [ConnectionScope] scope
+      # @return [Hash]
+      def load(scope)
+        data = parent.get("/#{connection_name}", scope.options)
+        parse_data(data)
+      end
+
+      # Parses the resulting data from a API request for a
+      # connection and returns the hash associated with it. This
+      # method replaces all the data hashes with actual
+      # {FacebookObject} objects.
+      #
+      # @param [Hash] data The data returned from the API call.
+      # @return [Hash]
+      def parse_data(data)
+        data ||= {}
+        data["data"] ||= []
+        data["data"] = data["data"].collect do |raw_item|
+          connection_class(raw_item).new(raw_item)
+        end
+
+        data
       end
 
       # Returns the class associated with this connection.

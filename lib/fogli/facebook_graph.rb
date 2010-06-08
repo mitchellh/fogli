@@ -34,8 +34,18 @@ module Fogli
       # method to make sure that the access token is properly set if
       # needed.
       [:get, :post, :delete].each do |method|
+        # A requester, where the arguments go through the {request}
+        # method, which handles automatically adding the
+        # {Fogli.access_token} if it is specified, and also handles
+        # the URL relative to the given path.
         define_method(method) do |*args|
           request(method, *args)
+        end
+
+        # A raw requester, which just directly requests with the given
+        # arguments.
+        define_method("raw_#{method}".to_sym) do |*args|
+          error_check { RestClient.send(method, *args) }
         end
       end
 
@@ -60,7 +70,7 @@ module Fogli
           # query parameters onto the end of the URL
           params = params.inject([]) do |acc, data|
             k, v = data
-            acc << "#{k}=#{CGI.escape(v)}"
+            acc << "#{k}=#{CGI.escape(v.to_s)}"
             acc
           end
 

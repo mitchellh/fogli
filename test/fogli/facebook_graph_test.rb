@@ -15,6 +15,11 @@ class FacebookGraphTest < Test::Unit::TestCase
         @klass.expects(:request).with(method, "/foo", {}).once
         @klass.send(method, "/foo", {})
       end
+
+      should "properly have a raw request for #{method} type" do
+        RestClient.expects(method).with("/foo", {}).once
+        @klass.send("raw_#{method}".to_sym, "/foo", {})
+      end
     end
 
     should "use http by default" do
@@ -31,6 +36,12 @@ class FacebookGraphTest < Test::Unit::TestCase
     should "append parameters for GET/DELETE" do
       params = { "foo" => "bar baz" }
       RestClient.expects(:get).with("http://#{@klass::GRAPH_DOMAIN}/foo?foo=bar+baz", {}).once
+      @klass.request(:get, "/foo", params)
+    end
+
+    should "convert params to strings for GET/DELETE" do
+      params = { :limit => 1 }
+      RestClient.expects(:get).with("http://#{@klass::GRAPH_DOMAIN}/foo?limit=1", {}).once
       @klass.request(:get, "/foo", params)
     end
 

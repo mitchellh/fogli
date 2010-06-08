@@ -55,6 +55,8 @@ module Fogli
   #
   class FacebookObject < FacebookGraph
     autoload :ConnectionProxy, 'fogli/facebook_object/connection_proxy'
+    autoload :ConnectionScope, 'fogli/facebook_object/connection_scope'
+    autoload :ScopeMethods, 'fogli/facebook_object/scope_methods'
 
     include Properties
     include Connections
