@@ -47,16 +47,6 @@ class FacebookObjectTest < Test::Unit::TestCase
         result = @klass.find(:foo, :fields => "name")
         assert_equal [:name], result.instance_variable_get(:@_fields)
       end
-
-      should "be able to eager load relationships" do
-        result = @klass.find(:foo, :include => :bar)
-        assert_equal [:bar], result.instance_variable_get(:@_fields)
-      end
-
-      should "properly merge fields and include" do
-        result = @klass.find(:foo, :include => :bar, :fields => :foo)
-        assert_equal [:foo, :bar], result.instance_variable_get(:@_fields)
-      end
     end
 
     context "existence checking" do
