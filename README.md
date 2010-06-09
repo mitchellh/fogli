@@ -84,6 +84,12 @@ easy:
       p item
     end
 
+You can also request multiple objects in a single request:
+
+    users = Fogli::User.find("btaylor", "arjun")
+    p users[0].name
+    p users[1].name
+
 ## Authentication, Authorization, and Accessing Private Data
 
 To access private data, Facebook requires that the you gain an `access_token`

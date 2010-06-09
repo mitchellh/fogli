@@ -74,6 +74,23 @@ class FacebookObjectTest < Test::Unit::TestCase
         instance = @klass.new(data)
         assert_equal data["id"], instance.id
       end
+
+      should "store the fields given to it as symbols" do
+        fields = ["foo", :bar, :baz]
+        instance = @klass.new(:_fields => fields)
+        assert_equal [:foo, :bar, :baz], instance._fields
+      end
+
+      should "store the collection given" do
+        collection = [:foo, :bar]
+        instance = @klass.new(:_collection => collection)
+        assert_equal collection, instance._collection
+      end
+
+      should "store the collection as self if not given" do
+        instance = @klass.new
+        assert_equal [instance], instance._collection
+      end
     end
   end
 
@@ -93,6 +110,16 @@ class FacebookObjectTest < Test::Unit::TestCase
         @instance.stubs(:id).returns(id)
         @instance.send(method, "/bar")
       end
+
+      should "not preprend #{method} requests with ID if specified" do
+        RestClient.expects(method).with() do |url, other|
+          assert url =~ /\.com\/bar$/, "Invalid URL: #{url}"
+          true
+        end
+
+        @instance.stubs(:id).returns("foo")
+        @instance.send(method, "/bar", :_no_id => true)
+      end
     end
 
     context "deleting" do
@@ -105,19 +132,16 @@ class FacebookObjectTest < Test::Unit::TestCase
     context "loading" do
       setup do
         @id = "foobar"
-        @data = {:id => @id}
+        @data = { @instance.id => {:id => @id}}
         @instance.stubs(:get).returns(@data)
-      end
-
-      should "store the raw data" do
-        @instance.load!
-        assert_equal @data, @instance._raw
       end
 
       should "get only the fields specified, if specified" do
         instance = @klass.find(@id, :fields => [:a, :b, :c])
-        instance.stubs(:get).returns({})
-        instance.expects(:get).with(:fields => "a,b,c").once.returns({})
+        instance.expects(:get).returns(@data).with() do |path, params|
+          assert_equal "a,b,c", params[:fields]
+          true
+        end
         instance.load!
       end
 

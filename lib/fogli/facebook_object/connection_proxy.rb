@@ -1,3 +1,5 @@
+require 'fogli/facebook_object/scope_methods'
+
 module Fogli
   class FacebookObject < FacebookGraph
     # The proxy object which sits between a facebook object and one of

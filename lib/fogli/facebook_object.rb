@@ -50,8 +50,13 @@ module Fogli
     include Connections
     extend Util::Options
 
+    # The fields which this object is restricted to. If empty, returns
+    # the default fields (Facebook's choice)
     attr_reader :_fields
-    attr_reader :_raw
+
+    # If non-nil, then represents the collection of objects which are
+    # to be queried in a single request.
+    attr_reader :_collection
 
     # Every facebook object has an id and typically an updated time
     # (if authorized)
@@ -73,16 +78,26 @@ module Fogli
       #   above.
       # @param [Hash] options Options such as `fields`.
       # @return [FacebookObject]
-      def find(id, options=nil)
-        data = { :_loaded => false, :id => id }
-        options = verify_options(options, :valid_keys => [:fields])
-        data[:_fields] = []
-        data[:_fields] << [options[:fields]] if options[:fields]
-        data[:_fields].flatten!
+      def find(*ids)
+        ids.flatten!
 
-        # Initialize the object with the loaded flag off and with the
-        # ID, so that the object is lazy loaded on first use.
-        new(data)
+        options = ids.pop if ids.last.is_a?(Hash)
+        options = verify_options(options, :valid_keys => [:fields])
+
+        result = ids.inject([]) do |collection, id|
+          data = { :id => id, :_loaded => false, :_collection => collection }
+          data[:_fields] = []
+          data[:_fields] << [options[:fields]] if options[:fields]
+          data[:_fields].flatten!
+
+          # Initialize the object with the loaded flag off and with the
+          # ID, so that the object is lazy loaded on first use.
+          collection << new(data)
+        end
+
+        # If we're only requesting 1 ID then just return the object,
+        # otherwise return an array of objects
+        result.length == 1 ? result.first : result
       end
       alias :[] :find
 
@@ -125,6 +140,7 @@ module Fogli
       @_loaded = !!data.delete(:_loaded)
       @_fields = data.delete(:_fields) || []
       @_fields.collect! { |f| f.to_sym }
+      @_collection = data.delete(:_collection) || [self]
 
       populate_properties(data) if !data.empty?
     end
@@ -138,17 +154,30 @@ module Fogli
       !!@_loaded
     end
 
+    # Marks this object as loaded. Don't call this unless you know
+    # what you're doing.
+    def loaded!
+      @_loaded = true
+    end
+
     # Loads the data from Facebook. This is typically called once on
     # first access of a property.
     def load!
-      Fogli.logger.info("Fogli Load: #{self.class}[#{id}] (object_id: #{__id__})") if Fogli.logger
-
-      params = {}
+      params = {
+        :ids => _collection.collect { |o| o.id }.join(","),
+        :_no_id => true
+      }
       params[:fields] = _fields.join(",") if !_fields.empty?
 
-      @_raw = get(params)
-      populate_properties(@_raw)
-      @_loaded = true
+      Fogli.logger.info("Fogli Load: #{self.class}[#{params[:ids]}] (object_id: #{__id__})") if Fogli.logger
+
+      data = get("/", params)
+
+      _collection.each do |object|
+        object.populate_properties(data[object.id] || {})
+        object.loaded!
+      end
+
       self
     end
 
@@ -220,7 +249,8 @@ module Fogli
     # the root object's ID.
     [:get, :post].each do |method|
       define_method(method) do |*args|
-        url = "/#{id}"
+        url = ""
+        url = "/#{id}" if !args.last.is_a?(Hash) || !args.last.delete(:_no_id)
         url += args.shift.to_s if !args[0].is_a?(Hash)
         super(url, *args)
       end
