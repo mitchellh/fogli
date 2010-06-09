@@ -169,6 +169,26 @@ module Fogli
       false
     end
 
+    # Returns the resouce URI associated with this object. For
+    # example, if the ID of this object is "george" then the URL
+    # returned will be this:
+    #
+    #     http://graph.facebook.com/george
+    #
+    # @return [String]
+    def resource_uri
+      "http://#{FacebookGraph::GRAPH_DOMAIN}/#{id}"
+    end
+
+    # Returns the URL for the picture associated with this object.
+    # This URL can be used in any HTML <img /> tag to display the
+    # image which represents this object.
+    #
+    # @return [String]
+    def picture
+      "#{resource_uri}/picture"
+    end
+
     # Override the read property method to call {#load!} if this
     # object hasn't been loaded yet.
     alias_method :read_property_original, :read_property

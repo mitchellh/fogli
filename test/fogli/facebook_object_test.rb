@@ -151,6 +151,19 @@ class FacebookObjectTest < Test::Unit::TestCase
       end
     end
 
+    context "resource URI" do
+      should "return the proper URI" do
+        uri = "http://#{Fogli::FacebookGraph::GRAPH_DOMAIN}/#{@instance.id}"
+        assert_equal uri, @instance.resource_uri
+      end
+    end
+
+    context "picture" do
+      should "return the proper URI" do
+        assert_equal "#{@instance.resource_uri}/picture", @instance.picture
+      end
+    end
+
     context "reading properties" do
       setup do
         @instance.stubs(:get).returns({})
