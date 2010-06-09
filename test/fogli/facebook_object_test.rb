@@ -47,6 +47,18 @@ class FacebookObjectTest < Test::Unit::TestCase
         result = @klass.find(:foo, :fields => "name")
         assert_equal [:name], result.instance_variable_get(:@_fields)
       end
+
+      should "return an array of objects if multiple IDs are given" do
+        result = @klass.find(1,2,3)
+        assert result.is_a?(Array)
+        result.each do |item|
+          assert_equal result, item._collection
+
+          # Make sure they're not the same instance of the array, even
+          # though they have the same contents
+          assert !result.equal?(item._collection)
+        end
+      end
     end
 
     context "existence checking" do

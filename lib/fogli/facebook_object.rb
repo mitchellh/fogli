@@ -26,6 +26,16 @@ module Fogli
   #     user.first_name # "Mitchell"
   #     user.link       # nil, since we didn't request it
   #
+  # # Finding Multiple Objects
+  #
+  # If you'd like to load multiple objects in a single query, you can
+  # request a find on them simultaneously by passing more IDs to the
+  # find method:
+  #
+  #     users = Fogli::User.find("mitchellh", "john.bender")
+  #     p users[0].name # HTTP query made here for both users (one query)
+  #     p users[1].name # Cache hit
+  #
   # # Checking if an Object Exists
   #
   # Since objects are lazy loaded, you can't check the return value of
@@ -71,12 +81,12 @@ module Fogli
       # if you only care about if the object exists, but not about
       # it's properties.
       #
+      # This can also lookup multiple IDs by passing in more IDs as
+      # arguments.
+      #
       # For examples on how to use this method, please view the
       # documentation for the entire {FacebookObject} class.
       #
-      # @param [String] id ID of the object
-      #   above.
-      # @param [Hash] options Options such as `fields`.
       # @return [FacebookObject]
       def find(*ids)
         ids.flatten!
@@ -97,7 +107,7 @@ module Fogli
 
         # If we're only requesting 1 ID then just return the object,
         # otherwise return an array of objects
-        result.length == 1 ? result.first : result
+        result.length == 1 ? result.first : result.dup
       end
       alias :[] :find
 

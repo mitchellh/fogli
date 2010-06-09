@@ -90,6 +90,13 @@ You can also request multiple objects in a single request:
     p users[0].name
     p users[1].name
 
+Want to request multiple objects of different types in a single request?
+You can do that, too:
+
+    album, user = Fogli::Dynamic.find(141048101, "mitchellh")
+    p album.class # Fogli::Album
+    p user.class  # Fogli::User
+
 ## Authentication, Authorization, and Accessing Private Data
 
 To access private data, Facebook requires that the you gain an `access_token`

@@ -27,6 +27,7 @@ module Fogli
   autoload :Album, 'fogli/album'
   autoload :CategorizedObject, 'fogli/categorized_object'
   autoload :Comment, 'fogli/comment'
+  autoload :Dynamic, 'fogli/dynamic'
   autoload :Event, 'fogli/event'
   autoload :Group, 'fogli/group'
   autoload :Link, 'fogli/link'
