@@ -104,11 +104,24 @@ authorize a user and print his or her email:
 
     get "/verify"
       # Facebook redirects back to this page with a GET parameter `code`
-      # which is used to get the access token.
+      # which is used to get the access token. This token should also be
+      # stored in a cookie or some session storage to be set on subsequent pages.
       Fogli.access_token = Fogli::OAuth.access_token(:code => params[:code])
 
       # Print authorized data to prove we're allowed!
       Fogli::User[:me].email
+    end
+
+Checking if a user is already authenciated is easy as well:
+
+    # Set from cookies, perhaps
+    Fogli.access_token = cookies[:access_token]
+
+    # Verify its valid
+    if Fogli::User.authorized?
+      # valid!
+    else
+      # reauthenticate
     end
 
 ## Accessing Connections with Scopes
