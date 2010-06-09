@@ -188,14 +188,17 @@ module Fogli
     # Delete an object. This always requires an access token. If you
     # do not yet have an access token, you must get one via {OAuth}.
     def delete
-      super("/#{id}")
+      # Although Facebook supposedly supports DELETE requests, we use
+      # their POST method since the rest client seems to have problems
+      # with DELETE requests.
+      post(:method => :delete)
     end
 
     # Override request methods to prepend object ID. When making a
     # request on an instance of a facebook object, its typically
     # to access a connection. To avoid repetition, we always prepend
     # the root object's ID.
-    [:get, :post, :delete].each do |method|
+    [:get, :post].each do |method|
       define_method(method) do |*args|
         url = "/#{id}"
         url += args.shift.to_s if !args[0].is_a?(Hash)

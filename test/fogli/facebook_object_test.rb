@@ -82,7 +82,7 @@ class FacebookObjectTest < Test::Unit::TestCase
       @instance = @klass.new
     end
 
-    [:get, :post, :delete].each do |method|
+    [:get, :post].each do |method|
       should "prepend any #{method} requests with the ID" do
         id = "foo"
         RestClient.expects(method).with() do |url, other|
@@ -92,6 +92,13 @@ class FacebookObjectTest < Test::Unit::TestCase
 
         @instance.stubs(:id).returns(id)
         @instance.send(method, "/bar")
+      end
+    end
+
+    context "deleting" do
+      should "post with the delete method" do
+        @instance.expects(:post).with(:method => :delete).once
+        @instance.delete
       end
     end
 
