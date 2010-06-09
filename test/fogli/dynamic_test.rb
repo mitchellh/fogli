@@ -28,6 +28,16 @@ class DynamicTest < Test::Unit::TestCase
       assert_equal Fogli::User, results[0].class
       assert_equal Fogli::Post, results[1].class
     end
+
+    should "return a single object when requesting a single ID" do
+      result = @klass.find(:foo)
+      assert result.is_a?(Fogli::User)
+    end
+
+    should "be loaded" do
+      result = @klass.find(:foo)
+      assert result.loaded?
+    end
   end
 
   context "class for data" do

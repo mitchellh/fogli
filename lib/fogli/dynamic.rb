@@ -20,10 +20,12 @@ module Fogli
         params[:metadata] = 1
 
         data = get("/", params)
-        ids.collect do |id|
+        results = ids.collect do |id|
           raw = data[id.to_s]
-          class_for_data(raw).new(raw)
+          class_for_data(raw).new(raw.merge(:_loaded => true))
         end
+
+        ids.length == 1 ? results.first : results
       end
 
       # Returns the class for the given raw data. If the type cannot
