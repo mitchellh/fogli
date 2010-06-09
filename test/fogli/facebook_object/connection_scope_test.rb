@@ -36,6 +36,14 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
 
       assert_equal 21, result
     end
+
+    should "limit the data to the specified amount" do
+      data = [stub_data(1,2,3), stub_data(4,5,6), stub_data(7)]
+      @instance.options[:limit] = 2
+      @instance.instance_variable_set(:@_data, data)
+      result = @instance.inject(0) { |a,i| a + 1 }
+      assert_equal 2, result
+    end
   end
 
   context "loading" do

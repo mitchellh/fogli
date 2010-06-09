@@ -52,13 +52,24 @@ module Fogli
         load! if !_data
 
         i = 0
+        count = 0
         while true
           # Sanity check to avoid nil accesses, although this should
           # never happen
           break if !_data || !_data[i]
 
           Fogli.logger.info("Fogli Cache: #{log_string(i)}") if Fogli.logger
-          _data[i]["data"].each(&block)
+
+          _data[i]["data"].each do |item|
+            count += 1
+            yield item
+
+            # Facebook's "limit" is a limit per page, not a total
+            # limit, which is what is expected, so we have to keep
+            # track of that manually
+            return if options[:limit] && count >= options[:limit].to_i
+          end
+
           i += 1
 
           if i >= _data.length
