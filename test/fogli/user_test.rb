@@ -8,7 +8,7 @@ class UserTest < Test::Unit::TestCase
   context "checking authorization" do
     setup do
       # Don't want any HTTP calls going out
-      @klass.stubs(:[])
+      @klass.stubs(:head)
     end
 
     should "return true if nothing is raised" do
@@ -16,7 +16,7 @@ class UserTest < Test::Unit::TestCase
     end
 
     should "return false if an exception is raised" do
-      @klass.expects(:[]).raises(Fogli::Exception.new("foo", "bar"))
+      @klass.expects(:head).raises(Fogli::Exception.new("foo", "bar"))
       assert !@klass.authorized?
     end
   end

@@ -33,7 +33,7 @@ module Fogli
       # Override default HTTParty behavior to go through our request
       # method to make sure that the access token is properly set if
       # needed.
-      [:get, :post, :delete].each do |method|
+      [:get, :post, :delete, :head].each do |method|
         # A requester, where the arguments go through the {request}
         # method, which handles automatically adding the
         # {Fogli.access_token} if it is specified, and also handles
@@ -96,6 +96,8 @@ module Fogli
         if data.is_a?(Hash) && data["error"]
           data = data["error"]
           raise Exception.new(data["type"], data["message"])
+        elsif response.code.to_i == 500
+          raise Exception.new("Unknown", "Internal server error")
         end
 
         data
@@ -114,7 +116,7 @@ module Fogli
     end
 
     # Shortcut methods to access the class-level methods.
-    [:get, :post, :delete].each do |method|
+    [:get, :post, :delete, :head].each do |method|
       define_method(method) do |*args|
         self.class.send(method, *args)
       end

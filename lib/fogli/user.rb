@@ -27,7 +27,7 @@ module Fogli
     #
     # @return [Boolean]
     def self.authorized?
-      User[:me]
+      head("/me")
       true
     rescue Fogli::Exception
       false

@@ -10,7 +10,7 @@ class FacebookGraphTest < Test::Unit::TestCase
       Fogli.access_token = nil
     end
 
-    [:get, :post, :delete].each do |method|
+    [:get, :post, :delete, :head].each do |method|
       should "properly request #{method} type" do
         @klass.expects(:request).with(method, "/foo", {}).once
         @klass.send(method, "/foo", {})
@@ -54,7 +54,11 @@ class FacebookGraphTest < Test::Unit::TestCase
 
   context "error checking" do
     def response(data)
-      @klass.stubs(:parse_response).returns(data)
+      response = mock("response")
+      response.stubs(:headers).returns({:content_type => "text/plain"})
+      response.stubs(:body).returns(data)
+      response.stubs(:code).returns(200)
+      response
     end
 
     should "return the data if the data is fine" do
@@ -67,6 +71,14 @@ class FacebookGraphTest < Test::Unit::TestCase
       data = { "error" => { "type" => "foo", "message" => "baz" }}
       assert_raises(Fogli::Exception) do
         @klass.error_check { response(data) }
+      end
+    end
+
+    should "raise an exception for a 500 response code" do
+      resp = response({})
+      resp.stubs(:code).returns(500)
+      assert_raises(Fogli::Exception) do
+        @klass.error_check { resp }
       end
     end
 
