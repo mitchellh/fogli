@@ -8,7 +8,9 @@ class UserTest < Test::Unit::TestCase
   context "checking authorization" do
     setup do
       # Don't want any HTTP calls going out
-      @klass.stubs(:head)
+      @object = Fogli::FacebookObject.new
+      @object.stubs(:load!)
+      @klass.stubs(:find).returns(@object)
     end
 
     should "return true if nothing is raised" do
@@ -16,7 +18,7 @@ class UserTest < Test::Unit::TestCase
     end
 
     should "return false if an exception is raised" do
-      @klass.expects(:head).raises(Fogli::Exception.new("foo", "bar"))
+      @object.expects(:load!).raises(Fogli::Exception.new("foo", "bar"))
       assert !@klass.authorized?
     end
   end

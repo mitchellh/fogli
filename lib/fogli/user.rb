@@ -27,7 +27,7 @@ module Fogli
     #
     # @return [Boolean]
     def self.authorized?
-      head("/me")
+      User.find(:me, :fields => :id).load!
       true
     rescue Fogli::Exception
       false
