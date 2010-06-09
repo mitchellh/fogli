@@ -12,7 +12,7 @@ class PostTest < Test::Unit::TestCase
   end
 
   should "be able to unlike a post" do
-    @instance.expects(:delete).with("/likes").once
+    @instance.expects(:post).with("/likes", :method => :delete).once
     @instance.unlike!
   end
 end

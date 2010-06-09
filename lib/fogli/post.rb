@@ -12,7 +12,7 @@ module Fogli
 
     # Unlike a post. This method requires authorization.
     def unlike!
-      delete("/likes")
+      post("/likes", :method => :delete)
     end
   end
 end
