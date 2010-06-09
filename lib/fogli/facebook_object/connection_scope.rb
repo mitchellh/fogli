@@ -77,7 +77,7 @@ module Fogli
           # first page.
 
           # Default the fields to be all fields of the parent
-          @options[:fields] ||= proxy.parent.class.properties.keys.join(",")
+          @options[:fields] ||= proxy.connection_class.properties.keys.join(",")
 
           @_data = [proxy.load(self)]
           true

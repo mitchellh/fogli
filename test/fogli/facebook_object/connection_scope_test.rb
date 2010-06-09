@@ -4,8 +4,9 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
   setup do
     @klass = Fogli::FacebookObject::ConnectionScope
 
-    @proxy = mock("proxy")
-    @proxy.stubs(:parent).returns(Fogli::FacebookObject.new)
+    @proxy = Fogli::FacebookObject::ConnectionProxy.new(Fogli::FacebookObject.new,
+                                                        :foo,
+                                                        {:class => :Post})
     @options = {}
     @instance = @klass.new(@proxy, @options)
   end
@@ -46,10 +47,7 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
       assert @instance.options[:fields].nil? # sanity check
       @proxy.expects(:load).with() do |scope|
         assert scope.options[:fields]
-
-        # This test depends on ordering, which may not be consistent
-        # across computers/rubies/etc
-        assert_equal "updated_time,id", scope.options[:fields]
+        assert_equal Fogli::Post.properties.keys.join(","), scope.options[:fields]
         true
       end
 

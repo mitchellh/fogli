@@ -36,7 +36,7 @@ class FacebookObjectConnectionProxyTest < Test::Unit::TestCase
   context "connection class" do
     should "just return the class if specified" do
       @connection_options[:class] = :User
-      assert_equal Fogli::User, @instance.connection_class({})
+      assert_equal Fogli::User, @instance.connection_class
     end
   end
 end

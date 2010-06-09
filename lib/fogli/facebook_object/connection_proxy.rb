@@ -63,7 +63,7 @@ module Fogli
         data ||= {}
         data["data"] ||= []
         data["data"] = data["data"].collect do |raw_item|
-          connection_class(raw_item).new(raw_item)
+          connection_class.new(raw_item)
         end
 
         data
@@ -71,12 +71,8 @@ module Fogli
 
       # Returns the class associated with this connection.
       #
-      # @param [Hash] raw The raw data associated with the
-      #   current item. This data is used for `:dynamic` class lookup
-      #   and ignored if a class was statically specified in the
-      #   connection options.
       # @return [Class]
-      def connection_class(raw)
+      def connection_class
         Fogli.const_get(connection_options[:class])
       end
     end
