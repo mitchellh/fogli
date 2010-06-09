@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta name="Content-Type" content="text/html; charset=utf8" />
+<title>Module: Fogli::FacebookObject::ScopeMethods</title>
+<link rel="stylesheet" href="../../css/style.css" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="../../css/common.css" type="text/css" media="screen" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  relpath = '../..';
+  if (relpath != '') relpath += '/';
+</script>
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+      if (window.top.frames.main) document.body.className = 'frames';
+    </script>
+    
+    <div id="header">
+      <div id="menu">
+  
+    <a href="../../_index.html">Index (S)</a> &raquo; 
+    <span class='title'><a href="../../Fogli.html" title="Fogli (module)">Fogli</a></span> &raquo; <span class='title'><a href="../FacebookObject.html" title="Fogli::FacebookObject (class)">FacebookObject</a></span>
+     &raquo; 
+    <span class="title">ScopeMethods</span>
+  
+  
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  <a id="class_list_link" href="#">Class List</a>
+  <a id="method_list_link" href="#">Method List</a>
+  <a id ="file_list_link" href="#">File List</a>
+</div>
+
+      <div class="clear"></div>
+    </div>
+    
+    <iframe id="search_frame"></iframe>
+    
+    <div id="content"><h1>Module: Fogli::FacebookObject::ScopeMethods
+  
+  
+  
+</h1>
+
+<dl class="box">
+  
+  
+    
+  
+    
+  
+  
+    <dt class="r1">Included in:</dt>
+    <dd class="r1"><a href="ConnectionProxy.html" title="Fogli::FacebookObject::ConnectionProxy (class)">ConnectionProxy</a>, <a href="ConnectionScope.html" title="Fogli::FacebookObject::ConnectionScope (class)">ConnectionScope</a></dd>
+    
+  
+  
+    <dt class="r2 last">Defined in:</dt>
+    <dd class="r2 last">lib/fogli/facebook_object/scope_methods.rb</dd>
+  
+</dl>
+<div class="clear"></div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>Includable module which has the scope methods to properly
+instantiate a <tt><a href="ConnectionScope.html" title="Fogli::FacebookObject::ConnectionScope (class)">ConnectionScope</a></tt>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+</div>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#_scope_initializer_args-instance_method" title="#_scope_initializer_args (instance method)">- (Array) <strong>_scope_initializer_args</strong>(scope, value) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the proper set of arguments to send to the
+<tt><a href="ConnectionScope.html" title="Fogli::FacebookObject::ConnectionScope (class)">ConnectionScope</a></tt> initializer given the scope and value.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fields-instance_method" title="#fields (instance method)">- (Object) <strong>fields</strong>(*fields) </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Scope the connection by the fields you're interested in.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+    
+    
+      <div class="method_details first">
+  <p class="signature first" id="_scope_initializer_args-instance_method">
+  
+    - (<tt>Array</tt>) <strong>_scope_initializer_args</strong>(scope, value) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Returns the proper set of arguments to send to the
+<tt><a href="ConnectionScope.html" title="Fogli::FacebookObject::ConnectionScope (class)">Fogli::FacebookObject::ConnectionScope</a></tt> initializer given the scope and value.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <h3>Parameters:</h3>
+<ul class="param">
+  
+    <li>
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <span class='name'>scope</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The scope option.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+        <span class='name'>value</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The value for the scope.</p></div>
+      
+    </li>
+  
+</ul>
+<h3>Returns:</h3>
+<ul class="return">
+  
+    <li>
+      
+        <span class='type'>(<tt>Array</tt>)</span>
+      
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+40
+41
+42
+43
+44
+45
+46</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/fogli/facebook_object/scope_methods.rb', line 40</span>
+
+<span class='def def kw'>def</span> <span class='_scope_initializer_args identifier id'>_scope_initializer_args</span><span class='lparen token'>(</span><span class='scope identifier id'>scope</span><span class='comma token'>,</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span>
+  <span class='if if kw'>if</span> <span class='self self kw'>self</span><span class='dot token'>.</span><span class='is_a? fid id'>is_a?</span><span class='lparen token'>(</span><span class='ConnectionScope constant id'>ConnectionScope</span><span class='rparen token'>)</span>
+    <span class='lbrack token'>[</span><span class='proxy identifier id'>proxy</span><span class='comma token'>,</span> <span class='options identifier id'>options</span><span class='dot token'>.</span><span class='merge identifier id'>merge</span><span class='lparen token'>(</span><span class='scope identifier id'>scope</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='value identifier id'>value</span><span class='rparen token'>)</span><span class='rbrack token'>]</span>
+  <span class='else else kw'>else</span>
+    <span class='lbrack token'>[</span><span class='self self kw'>self</span><span class='comma token'>,</span> <span class='lbrace token'>{</span><span class='scope identifier id'>scope</span> <span class='assign token'>=</span><span class='gt op'>&gt;</span> <span class='value identifier id'>value</span><span class='rbrace token'>}</span><span class='rbrack token'>]</span>
+  <span class='end end kw'>end</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <p class="signature " id="fields-instance_method">
+  
+    - (<tt>Object</tt>) <strong>fields</strong>(*fields) 
+  
+
+  
+</p><div class="docstring">
+  <div class="discussion">
+    <p>Scope the connection by the fields you're interested in. By
+default, the connection will load all the possible fields for
+the connection, which can result in a fairly large overhead if
+you're only interested in the <code>first_name</code>, for example.</p>
+
+<p>The parameter to this method can be almost anything which can
+intuitively be converted down to either a string or
+array. Some example uses follow (admittingly some of these are
+a bit pathological, but they're meant to showcase the
+flexibility of the method):</p>
+
+<pre class="code"><span class='fields identifier id'>fields</span><span class='lparen token'>(</span><span class='string val'>&quot;name,birthday,last_name&quot;</span><span class='rparen token'>)</span>
+<span class='fields identifier id'>fields</span><span class='lparen token'>(</span><span class='symbol val'>:name</span><span class='comma token'>,</span> <span class='symbol val'>:birthday</span><span class='comma token'>,</span> <span class='symbol val'>:last_name</span><span class='rparen token'>)</span>
+<span class='fields identifier id'>fields</span><span class='lparen token'>(</span><span class='lbrack token'>[</span><span class='symbol val'>:name</span><span class='comma token'>,</span> <span class='string val'>&quot;birthday&quot;</span><span class='rbrack token'>]</span><span class='comma token'>,</span> <span class='symbol val'>:last_name</span><span class='rparen token'>)</span>
+<span class='fields identifier id'>fields</span><span class='lparen token'>(</span><span class='string val'>&quot;name,birthday&quot;</span><span class='comma token'>,</span> <span class='lbrack token'>[</span><span class='string val'>&quot;last_name&quot;</span><span class='rbrack token'>]</span><span class='rparen token'>)</span>
+</pre>
+
+  </div>
+</div>
+<div class="tags">
+  
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/fogli/facebook_object/scope_methods.rb', line 30</span>
+
+<span class='def def kw'>def</span> <span class='fields identifier id'>fields</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='fields identifier id'>fields</span><span class='rparen token'>)</span>
+  <span class='ConnectionScope constant id'>ConnectionScope</span><span class='dot token'>.</span><span class='new identifier id'>new</span><span class='lparen token'>(</span><span class='mult op'>*</span><span class='_scope_initializer_args identifier id'>_scope_initializer_args</span><span class='lparen token'>(</span><span class='symbol val'>:fields</span><span class='comma token'>,</span> <span class='fields identifier id'>fields</span><span class='dot token'>.</span><span class='flatten identifier id'>flatten</span><span class='dot token'>.</span><span class='join identifier id'>join</span><span class='lparen token'>(</span><span class='string val'>&quot;,&quot;</span><span class='rparen token'>)</span><span class='rparen token'>)</span><span class='rparen token'>)</span>
+<span class='end end kw'>end</span>
+</pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+    
+    <div id="footer">
+  Generated on Tue Jun  8 19:49:15 2010 by 
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool">yard</a>
+  0.5.5 (ruby-1.8.7).
+</div>
+
+  </body>
+</html>
