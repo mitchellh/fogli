@@ -2,15 +2,50 @@
 
 Fogli is a **F**acebook **O**pen **G**raph **Li**brary.
 
-Although there were a handful of libaries already available for
-the Facebook Graph API, none truly embraced the object
-relational structure of the data. Facebook refers to the
-`attributes` and `connections` of each `object`, which directly map
-to object oriented concepts.
+## Why?
+
+Facebook introduced the Graph API in April, 2010. This API is intended
+to replace their existing "RESTful API" in the future. Mature Facebook
+libraries such as [Facebooker](http://github.com/mmangino/facebooker) are
+heavily tied to the RESTful API and have not started supporting the Open
+Graph.
+
+At the time of Fogli's creation, there were a handful of other libraries
+claiming to be Facebook Graph libraries, but I found them unsatisfactory
+since they did not meet any or all of the following requirements:
+
+* Minimizes query calls
+* Strong feature support
+* Intuitive object model
+* Independent library; not tied to any web framework
 
 Fogli aims to expose the objects of the Facebook Graph through an intuitive
 object oriented interface while minimizing the number of queries needed
-to access data through lazy loading and caching.
+to access data through lazy loading and caching. Fogli is not tied to any
+web framework and can run standalone perfectly fine.
+
+## Supported Features
+
+Below is a list of supported Facebook Graph features:
+
+* Authorization via OAuth
+* Reading objects (`User`, `Page`, etc.)
+* Reading object connections
+* Deleting objects
+* Scoping top level objects by `fields`
+* Scoping connections by `limit`, `offset`, `since`, `until`, and `fields`
+* Liking/unliking posts
+
+The list below is a list of unsupported features, but development is
+planned in the near future:
+
+* More support for publishing (posting comments, attending events, etc.)
+* Search
+* Real time updates
+* Analytics
+
+Have a feature request? Submit it on the [GitHub Issues](https://github.com/mitchellh/fogli/issues)
+page, or fork and send me a patch!
 
 ## Getting Started
 
