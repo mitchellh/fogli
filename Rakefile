@@ -4,11 +4,14 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "fogli"
-    gem.summary = "Facebook Open Graph Library"
-    gem.description = "Facebook Open Graph Library"
+    gem.summary = "An efficient, simple, and intuitive Facebook Open Graph library."
+    gem.description = "An efficient, simple, and intuitive Facebook Open Graph library."
     gem.email = "mitchell.hashimoto@gmail.com"
     gem.homepage = "http://github.com/mitchellh/fogli"
     gem.authors = ["Mitchell Hashimoto"]
+
+    gem.add_dependency('rest-client', "~> 1.5.1")
+    gem.add_dependency('json_pure', "~> 1.2.0")
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
