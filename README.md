@@ -56,7 +56,7 @@ Install Fogli:
 Next, you can do a few things:
 
 * Open an IRB session and begin playing. Fogli isn't tied to any framework,
-so you can see it work right away:
+  so you can see it work right away:
 
         >> require "fogli"
         >> m = Fogli::User["mitchellh"]
@@ -64,9 +64,10 @@ so you can see it work right away:
         => "Mitchell Hashimoto"
 
 * Run the examples in the `examples/` directory to see how to access basic
-connections and also use {Fogli::OAuth OAuth} to access authorized data.
+  connections and also use {Fogli::OAuth OAuth} to access authorized data.
 
-* Read the documentation here!
+* Read the documentation here! For more specific, class by class documentation,
+  please read [the source-generated documentation](http://mitchellh.github.com/fogli/).
 
 ## Reading Data and Accessing Connections
 
