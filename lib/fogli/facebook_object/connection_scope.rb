@@ -27,6 +27,7 @@ module Fogli
     #
     class ConnectionScope
       include ScopeMethods
+      include Enumerable
 
       attr_reader :proxy
       attr_reader :options
@@ -49,13 +50,46 @@ module Fogli
       # pagination, so the developer need not worry about it.
       def each(&block)
         load! if !_data
-        _data["data"].each(&block)
+
+        i = 0
+        while true
+          # Sanity check to avoid nil accesses, although this should
+          # never happen
+          break if !_data || !_data[i]
+
+          _data[i]["data"].each(&block)
+          i += 1
+
+          if i >= _data.length
+            # Load the next page, but exit the loop if we're on the
+            # last page.
+            break if !load!
+          end
+        end
       end
 
       # Loads the next batch of data associated with this scope and
       # adds it to the data array.
       def load!
-        @_data = proxy.load(self)
+        if _data.nil?
+          # We haven't loaded any of the data yet so start with the
+          # first page.
+          @_data = [proxy.load(self)]
+          return true
+        else
+          # We want to load the next page of the data, and append it
+          # to the data array.
+          next_page = _data.last["paging"]["next"] rescue nil
+          _data << proxy.parse_data(FacebookGraph.raw_get(next_page)) if next_page
+          return !next_page.nil?
+        end
+      end
+
+      # Clears the data cache associated with this scope. This will
+      # force a reload of the data on the next call and will remove
+      # all references to any data items.
+      def clear_cache
+        @_data = nil
       end
     end
   end
