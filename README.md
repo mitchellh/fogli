@@ -23,10 +23,10 @@ Next, you can do a few things:
 * Open an IRB session and begin playing. Fogli isn't tied to any framework,
 so you can see it work right away:
 
-    >> require "fogli"
-    >> m = Fogli::User["mitchellh"]
-    >> m.name
-    => "Mitchell Hashimoto"
+        >> require "fogli"
+        >> m = Fogli::User["mitchellh"]
+        >> m.name
+        => "Mitchell Hashimoto"
 
 * Run the examples in the `examples/` directory to see how to access basic
 connections and also use {Fogli::OAuth OAuth} to access authorized data.
