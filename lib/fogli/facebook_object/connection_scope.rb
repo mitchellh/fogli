@@ -73,9 +73,12 @@ module Fogli
       # adds it to the data array.
       def load!
         result = if _data.nil?
-
           # We haven't loaded any of the data yet so start with the
           # first page.
+
+          # Default the fields to be all fields of the parent
+          @options[:fields] ||= proxy.parent.class.properties.keys.join(",")
+
           @_data = [proxy.load(self)]
           true
         else

@@ -5,6 +5,7 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
     @klass = Fogli::FacebookObject::ConnectionScope
 
     @proxy = mock("proxy")
+    @proxy.stubs(:parent).returns(Fogli::FacebookObject.new)
     @options = {}
     @instance = @klass.new(@proxy, @options)
   end
@@ -41,6 +42,20 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
       @instance.clear_cache
     end
 
+    should "default the fields to all of the parent's if not specified" do
+      assert @instance.options[:fields].nil? # sanity check
+      @proxy.expects(:load).with() do |scope|
+        assert scope.options[:fields]
+
+        # This test depends on ordering, which may not be consistent
+        # across computers/rubies/etc
+        assert_equal "updated_time,id", scope.options[:fields]
+        true
+      end
+
+      @instance.load!
+    end
+
     should "load the first page if data hasn't been loaded yet" do
       data = mock("data")
       @proxy.expects(:load).with(@instance).returns(data)
@@ -59,7 +74,7 @@ class FacebookObjectConnectionScopeTest < Test::Unit::TestCase
       assert_equal raw, @instance._data.last
     end
 
-    should "return fales if no next page is available" do
+    should "return false if no next page is available" do
       data = { "paging" => { } }
       @proxy.stubs(:load).returns(data)
       @instance.load!
