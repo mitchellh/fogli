@@ -15,6 +15,10 @@ module Fogli
   mattr_accessor :redirect_uri
   mattr_accessor :access_token
 
+  # Logger. Set this to anything which has the same API as the Ruby
+  # standard library logger, or `nil` to disable logging (default)
+  mattr_accessor :logger
+
   autoload :Exception, 'fogli/exception'
   autoload :FacebookGraph, 'fogli/facebook_graph'
   autoload :FacebookObject, 'fogli/facebook_object'

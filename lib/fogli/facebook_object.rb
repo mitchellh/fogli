@@ -141,6 +141,8 @@ module Fogli
     # Loads the data from Facebook. This is typically called once on
     # first access of a property.
     def load!
+      Fogli.logger.info("Fogli Load: #{self.class}[#{id}] (object_id: #{__id__})") if Fogli.logger
+
       params = {}
       params[:fields] = _fields.join(",") if !_fields.empty?
 
@@ -171,7 +173,15 @@ module Fogli
     # object hasn't been loaded yet.
     alias_method :read_property_original, :read_property
     def read_property(name)
-      load! if !loaded? && name.to_sym != :id
+      if name.to_sym != :id
+        if !loaded?
+          load!
+        elsif Fogli.logger
+          # Cache hit, log it if enabled
+          Fogli.logger.info("Fogli Cache: #{self.class}[#{id}].#{name} (object_id: #{__id__})")
+        end
+      end
+
       read_property_original(name)
     end
 

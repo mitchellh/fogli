@@ -39,12 +39,14 @@ module Fogli
         # {Fogli.access_token} if it is specified, and also handles
         # the URL relative to the given path.
         define_method(method) do |*args|
+          Fogli.logger.debug("Fogli #{method}: #{args.inspect}") if Fogli.logger
           request(method, *args)
         end
 
         # A raw requester, which just directly requests with the given
         # arguments.
         define_method("raw_#{method}".to_sym) do |*args|
+          Fogli.logger.debug("Fogli raw #{method}: #{args.inspect}") if Fogli.logger
           error_check { RestClient.send(method, *args) }
         end
       end

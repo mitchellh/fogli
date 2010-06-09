@@ -57,6 +57,7 @@ module Fogli
           # never happen
           break if !_data || !_data[i]
 
+          Fogli.logger.info("Fogli Cache: #{log_string(i)}") if Fogli.logger
           _data[i]["data"].each(&block)
           i += 1
 
@@ -71,18 +72,22 @@ module Fogli
       # Loads the next batch of data associated with this scope and
       # adds it to the data array.
       def load!
-        if _data.nil?
+        result = if _data.nil?
+
           # We haven't loaded any of the data yet so start with the
           # first page.
           @_data = [proxy.load(self)]
-          return true
+          true
         else
           # We want to load the next page of the data, and append it
           # to the data array.
           next_page = _data.last["paging"]["next"] rescue nil
           _data << proxy.parse_data(FacebookGraph.raw_get(next_page)) if next_page
-          return !next_page.nil?
+          !next_page.nil?
         end
+
+        Fogli.logger.info("Load: #{log_string(_data.length)}") if Fogli.logger && result
+        result
       end
 
       # Clears the data cache associated with this scope. This will
@@ -90,6 +95,14 @@ module Fogli
       # all references to any data items.
       def clear_cache
         @_data = nil
+      end
+
+      # Returns the common log string for a scope. This is used
+      # internally for the logger output, if enabled.
+      #
+      # @return [String]
+      def log_string(page)
+        "#{proxy.parent.class}/#{proxy.connection_name} (page #{page}) (object_id: #{__id__})"
       end
     end
   end
