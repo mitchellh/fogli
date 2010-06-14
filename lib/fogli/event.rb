@@ -4,6 +4,6 @@ module Fogli
              :venue, :privacy
 
     connection :feed, :class => :Post
-    conncetion :noreply, :maybe, :invited, :attending, :declined, :class => :User
+    connection :noreply, :maybe, :invited, :attending, :declined, :class => :User
   end
 end
