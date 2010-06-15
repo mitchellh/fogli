@@ -116,6 +116,12 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
           @instance.name = :foo
         }
       end
+
+      should "turn other FacebookObjects into their respective IDs" do
+        @object = Fogli::FacebookObject.new(:id => :foo)
+        @instance.name = @object
+        assert_equal @object.id, @instance.name
+      end
     end
   end
 end

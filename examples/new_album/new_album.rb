@@ -16,5 +16,9 @@ get "/verify" do
   Fogli.access_token = Fogli::OAuth.access_token(:code => params[:code])
 
   # Output authorized information to verify it worked
-  Fogli::User[:me].email
+  a = Fogli::Album.new
+  a.name = "My Test Album"
+  a.message = "My Test Message"
+  a.profile = Fogli::User[:me]
+  a.save
 end

@@ -96,6 +96,7 @@ module Fogli
       # @param [Object] value The value to associate with the property.
       def write_property(name, value)
         raise ReadOnlyException.new if !new_record?
+        value = value.id if value.is_a?(FacebookObject)
         property_values[name] = value
       end
 

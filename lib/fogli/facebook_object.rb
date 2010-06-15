@@ -232,7 +232,7 @@ module Fogli
     # object hasn't been loaded yet.
     alias_method :read_property_original, :read_property
     def read_property(name)
-      if name.to_sym != :id
+      if !new_record? && name.to_sym != :id
         if !loaded?
           load!
         elsif Fogli.logger

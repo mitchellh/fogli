@@ -203,12 +203,19 @@ class FacebookObjectTest < Test::Unit::TestCase
     context "reading properties" do
       setup do
         @instance.stubs(:get).returns({})
+        @instance.populate_properties(:id => :foo)
       end
 
       should "not load if accessing id" do
         assert !@instance.loaded?
         @instance.expects(:load!).never
         @instance.id
+      end
+
+      should "not load if its a new record" do
+        @instance = @klass.new
+        @instance.expects(:load!).never
+        @instance.updated_time
       end
 
       should "load on first property access" do
