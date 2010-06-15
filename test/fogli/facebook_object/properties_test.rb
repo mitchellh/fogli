@@ -12,7 +12,8 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
   context "class methods" do
     context "defining properties" do
       setup do
-        @property_klass = @klass
+        @property_klass = Class.new
+        @property_klass.send(:include, Fogli::FacebookObject::Properties)
       end
 
       teardown do
@@ -28,6 +29,17 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
         @property_klass.property(:foo, :bar)
         assert @property_klass.properties.keys.include?(:foo)
         assert @property_klass.properties.keys.include?(:bar)
+      end
+
+      should "create a readonly method by default" do
+        @property_klass.property(:baz)
+        assert @property_klass.new.respond_to?(:baz)
+        assert !@property_klass.new.respond_to?(:baz=)
+      end
+
+      should "be able to define writable properties" do
+        @property_klass.property(:baz, :writer => true)
+        assert @property_klass.new.respond_to?(:baz=)
       end
 
       should "be able to define options" do
@@ -49,6 +61,7 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
   context "with an instance" do
     setup do
       @klass.property :id
+      @klass.property :name, :writer => true
       @instance = @klass.new
     end
 
@@ -56,24 +69,53 @@ class FacebookObjectPropertiesTest < Test::Unit::TestCase
       @klass.properties.clear
     end
 
-    should "set the properties based on the hash data" do
-      @instance.populate_properties({"id" => "foo"})
-      assert_equal "foo", @instance.id
+    context "new/existing record" do
+      should "be a new record by default" do
+        assert @instance.new_record?
+      end
+
+      should "be an existing record if properties are populated" do
+        @instance.populate_properties(:id => :foo)
+        assert !@instance.new_record?
+      end
     end
 
-    should "set the properties based on the hash data [symbol]" do
-      @instance.populate_properties({:id => "foo"})
-      assert_equal "foo", @instance.id
+    context "populating and reading properties" do
+      should "set the properties based on the hash data" do
+        @instance.populate_properties({"id" => "foo"})
+        assert_equal "foo", @instance.id
+      end
+
+      should "set the properties based on the hash data [symbol]" do
+        @instance.populate_properties({:id => "foo"})
+        assert_equal "foo", @instance.id
+      end
+
+      should "detect and store NamedObjects" do
+        @instance.populate_properties({"id" => {"name" => "foo"}})
+        assert @instance.property_values[:id].is_a?(Fogli::NamedObject)
+      end
+
+      should "read NamedObject's names when reading a property" do
+        @instance.populate_properties({"id" => {"name" => "foo"}})
+        assert_equal "foo", @instance.id
+      end
     end
 
-    should "detect and store NamedObjects" do
-      @instance.populate_properties({"id" => {"name" => "foo"}})
-      assert @instance.property_values[:id].is_a?(Fogli::NamedObject)
-    end
+    context "writing properties" do
+      should "write and store the properties" do
+        name = :foo
+        assert_nil @instance.name
+        @instance.name = name
+        assert_equal name, @instance.name
+      end
 
-    should "read NamedObject's names when reading a property" do
-      @instance.populate_properties({"id" => {"name" => "foo"}})
-      assert_equal "foo", @instance.id
+      should "not allow writing of existing records" do
+        @instance.populate_properties(:id => :foo)
+        assert_raises(Fogli::ReadOnlyException) {
+          @instance.name = :foo
+        }
+      end
     end
   end
 end

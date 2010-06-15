@@ -12,4 +12,8 @@ module Fogli
       super()
     end
   end
+
+  # Raised if attempting to write a property of an existing record,
+  # which is always read-only.
+  class ReadOnlyException < ::Exception; end
 end

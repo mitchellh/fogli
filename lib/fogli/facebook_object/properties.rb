@@ -23,6 +23,11 @@ module Fogli
 
             # Create a method for reading the property.
             define_method(name) { read_property(name) }
+
+            if options[:writer]
+              # Create a method for writing the property if specified
+              define_method("#{name}=".to_sym) { |value| write_property(name, value) }
+            end
           end
         end
 
@@ -46,7 +51,9 @@ module Fogli
       # method also handles parsing non-primitive data such as other
       # facebook objects.
       def populate_properties(data)
+        # Clear old values and mark as an existing record
         property_values.clear
+        @_existing_record = true
 
         self.class.properties.keys.each do |name|
           # Try both the string and symbol lookup to get the item
@@ -65,14 +72,36 @@ module Fogli
         self
       end
 
+      # Returns a boolean true/false depending on if this instance
+      # represents a new or existing record.
+      #
+      # @return [Boolean]
+      def new_record?
+        !@_existing_record
+      end
+
       # Reads a property.
+      #
+      # @param [Symbol] name The name of the property to read.
+      # @return [Object]
       def read_property(name)
         value = property_values[name]
         value = value.name if value.is_a?(NamedObject)
         value
       end
 
+      # Writes a property
+      #
+      # @param [Symbol] name The name of the property to write.
+      # @param [Object] value The value to associate with the property.
+      def write_property(name, value)
+        raise ReadOnlyException.new if !new_record?
+        property_values[name] = value
+      end
+
       # Stores the values of the variables properties
+      #
+      # @return [Hash]
       def property_values
         @_property_values ||= {}
       end

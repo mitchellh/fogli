@@ -20,6 +20,7 @@ module Fogli
   mattr_accessor :logger
 
   autoload :Exception, 'fogli/exception'
+  autoload :ReadOnlyException, 'fogli/exception'
   autoload :FacebookGraph, 'fogli/facebook_graph'
   autoload :FacebookObject, 'fogli/facebook_object'
 
